@@ -1,38 +1,54 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# MindForge
+
+MindForge is a web application that utilizes OpenAI's GPT-3 and ElevenLabs' text-to-speech API to generate human-like text and speech based on user input. This project is built using Next.js.
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
+Before running the project, make sure you have the following installed:
+
+- Node.js (v14.0.0 or higher)
+- npm or yarn (package manager)
+
+### Installation
+
+1. Clone the repository:
+   
+git clone https://github.com/TheExodus90/MindForge.git
+
+
+2. Navigate to the project directory:
+
+cd MindForge
+
+
+3. Install the required dependencies:
+
+npm install
+
+or
+yarn install
+
+
+4. Create a `.env.local` file at the root of the project and add the necessary API keys:
+
+OPENAI_API_KEY=your_openai_api_key
+ELEVENLABS_API_KEY=your_elevenlabs_api_key
+
+
+5. Running the Development Server
+
+To start the development server, run:
+
 npm run dev
-# or
+
+or
 yarn dev
-# or
-pnpm dev
-```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Features
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Generate human-like text responses based text and speech based on user input. This project is built using Next.js.
