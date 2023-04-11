@@ -7,7 +7,8 @@ export default function Home() {
   const [count, setCounter] = useState(0);
   const [promptInput, setPromptInput] = useState("");
   const [result, setResult] = useState();
-  const [voice, setVoice] = useState("female"); // added state for voice selection
+  const [voice, setVoice] = useState("female");
+  const [mode, setMode] = useState("genie");
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -22,7 +23,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: promptInput, voice }),
+        body: JSON.stringify({ prompt: promptInput, voice, mode }),
       });
 
       const data = await response.json();
@@ -30,7 +31,12 @@ export default function Home() {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
-      setResult(data.result);
+      setResult(
+        (prevResult) =>
+          `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nChatGPT: ${
+            data.result.trim()
+          }`
+      );
       setCounter(count + 1);
       setPromptInput("");
 
@@ -39,9 +45,8 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: data.result, voice }), // add the voice property here
+        body: JSON.stringify({ text: data.result, voice }),
       });
-      
 
       // Play the audio
       if (audioResponse.ok) {
@@ -79,16 +84,33 @@ export default function Home() {
             }}
             placeholder="Ask Genie A Question"
           />
-         <div>
-  <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
-  <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Female Face
-</div>
-
-
-          <input type="submit" value="Generate Response" />
-        </form>
-        <div className={styles.result}>{result}</div>
-      </main>
+          <div>
+            <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
+            <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Female Voice
+          </div>
+          
+        <div>
+        <label htmlFor="mode">Personality: </label>
+        <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
+        <option value="genie">Genie</option>
+        <option value="assistant">Assistant</option>
+        <option value="simplify">Simplify</option>
+        <option value="positive">Positive</option>
+        <option value="storytelling">Storytelling</option>
+        <option value="stoner">Stoner</option>
+        <option value="companion">Companion</option>
+      </select>
+  </div>
+  <input type="submit" value="Generate Response" />
+  </form>
+  <textarea
+  className={styles.result}
+  value={result}
+  readOnly
+  style={{width: '40%', height: '220px'}}
+  placeholder="Generated response will appear here"
+    />
+    </main>
     </div>
-  );
-}
+    );
+    }

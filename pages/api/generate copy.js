@@ -34,7 +34,7 @@ if (prompt.trim().length === 0) {
 try {
 const response = await openai.createCompletion({
 model: "text-davinci-003",
-prompt: `You are a hyperintelligent AI, please answer the following question${prompt}`,
+prompt: `Please answer the following question as if you were a hyperintelligent A.I Assistant:${prompt}`,
 temperature: 0.8,
 max_tokens: 250,
 });
