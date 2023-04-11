@@ -7,6 +7,7 @@ export default function Home() {
   const [count, setCounter] = useState(0);
   const [promptInput, setPromptInput] = useState("");
   const [result, setResult] = useState();
+  const [voice, setVoice] = useState("female"); // added state for voice selection
 
   async function onSubmit(e) {
     e.preventDefault();
@@ -21,7 +22,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ prompt: promptInput }),
+        body: JSON.stringify({ prompt: promptInput, voice }),
       });
 
       const data = await response.json();
@@ -38,8 +39,9 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: data.result }),
+        body: JSON.stringify({ text: data.result, voice }), // add the voice property here
       });
+      
 
       // Play the audio
       if (audioResponse.ok) {
@@ -65,7 +67,7 @@ export default function Home() {
       </Head>
       <main className={styles.main}>
         <img src="/favicon.ico" className={styles.icon} />
-        <h3>Ask Genie a Question</h3>
+        <h3>Mind Forge</h3>
         <form onSubmit={onSubmit}>
           <input
             type="text"
@@ -77,6 +79,12 @@ export default function Home() {
             }}
             placeholder="Ask Genie A Question"
           />
+         <div>
+  <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
+  <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Female Face
+</div>
+
+
           <input type="submit" value="Generate Response" />
         </form>
         <div className={styles.result}>{result}</div>

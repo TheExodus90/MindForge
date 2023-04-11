@@ -54,6 +54,6 @@ color:white;
 }
 
 .body {
-    background: rgb(12,11,13);
-    background: linear-gradient(135deg, rgba(12,11,13,1) 11%, rgba(67,3,84,1) 31%, rgba(84,12,103,1) 51%, rgba(14,115,33,1) 99%);
+  background: rgb(2,0,36);
+  background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(0,0,0,1) 57%, rgba(4,85,21,1) 100%);
 }
