@@ -1,9 +1,9 @@
 import fetch from "node-fetch";
 
 export default async function (req, res) {
-  const text = req.body.text;
+  const { text, voice } = req.body;
 
-  const url = "https://api.elevenlabs.io/v1/text-to-speech/EXAVITQu4vr4xnSDxMaL";
+  const url = `https://api.elevenlabs.io/v1/text-to-speech/${voice === 'male' ? 'EXAVITQu4vr4xnSDxMaL' : 'ErXwobaYiN019PkySvjV'}`;
   const headers = {
     "xi-api-key": process.env.ELEVENLABS_API_KEY,
     "Content-Type": "application/json",

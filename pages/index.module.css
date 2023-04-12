@@ -1,3 +1,24 @@
+
+.body {
+  background-color: rgba(0, 27, 10, 1);
+  background: rgb(0, 27, 10);
+  background: linear-gradient(135deg, rgba(0, 27, 10, 1) 0%, rgba(0, 128, 0, 1) 100%);
+  background-size: 400% 400%;
+  animation: Gradient 15s ease infinite;
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 .main,
 .main input {
   font-size: 16px;
@@ -6,34 +27,63 @@
   font-family: "ColfaxAI", Helvetica, sans-serif;
 }
 .main {
-display: flex;
-flex-direction:column;
-align-items: center;
-padding-top:60px;
-color:white;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  color: white;
+  animation: fadeIn 1s ease;
 }
 .main .icon {
   width: 34px;
 }
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
 .main h3 {
   font-size: 32px;
   line-height: 40px;
   font-weight: bold;
   color: #9dacca;
   margin: 16px 0 40px;
+  overflow: hidden;
+  white-space: nowrap;
+  border-right: 0; /* Remove the border-right */
+  width: 250px; /* Set the expected width of the text */
+  text-align: center; /* Center the text */
+  animation: typing 3.5s steps(40, end); /* Remove the blink-caret animation */
 }
+
+
+
 .main form {
   display: flex;
   flex-direction: column;
   width: 320px;
 }
-.main input[type="text"] {
+.main input[type="text"],
+.main select {
   padding: 12px 16px;
   border: 1px solid #10a37f;
   border-radius: 4px;
   margin-bottom: 24px;
   outline-color: #10a37f;
+  transition: all 0.3s ease;
+}
+.main input[type="text"]:hover,
+.main select:hover {
+  border-color: #0d7d5a;
+}
+.main input[type="text"]:focus,
+.main select:focus {
+  border-color: #0d7d5a;
+  box-shadow: 0 0 0 2px rgba(13, 125, 90, 0.2);
 }
 .main ::placeholder {
   color: #8e8ea0;
@@ -42,11 +92,28 @@ color:white;
 .main input[type="submit"] {
   padding: 12px 0;
   color: #fff;
-  background-color: #10a37f;
+  background-image: linear-gradient(135deg, #10a37f 0%, #0d7d5a 100%);
   border: none;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease;
+  animation: breathing 5s ease infinite;
+}
+
+@keyframes breathing {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.015);
+    opacity: 0.8;
+  }
+}
+
+.main input[type="submit"]:hover {
+  background-image: linear-gradient(135deg, #0d7d5a 0%, #10a37f 100%);
 }
 .main .result {
   font-weight: bold;
@@ -54,6 +121,30 @@ color:white;
 }
 
 .body {
-    background: rgb(12,11,13);
-    background: linear-gradient(135deg, rgba(12,11,13,1) 11%, rgba(67,3,84,1) 31%, rgba(84,12,103,1) 51%, rgba(14,115,33,1) 99%);
+  background-color: rgba(0, 27, 10, 1);
+  background: rgb(0, 27, 10);
+  background: linear-gradient(135deg, rgba(0, 27, 10, 1) 0%, rgba(0, 128, 0, 1) 100%);
+  background-size: 400% 400%;
+  animation: Gradient 15s ease infinite;
+}
+
+@keyframes Gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
