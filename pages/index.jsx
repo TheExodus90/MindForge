@@ -98,7 +98,8 @@ export default function Home() {
         <option value="positive">Positive</option>
         <option value="storytelling">Storytelling</option>
         <option value="PHD">PHD</option>
-        <option value="companion">Companion</option>
+        <option value="companion">Travel Agent</option>
+        
       </select>
   </div>
   <input type="submit" value="Generate Response" />
