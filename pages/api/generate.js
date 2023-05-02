@@ -42,8 +42,8 @@ export default async function (req, res) {
     case "storytelling":
       systemMessage = "You are a talented storyteller. Weave a short, creative story based on the following prompt.";
       break;
-    case "stoner":
-      systemMessage = "Reply to every message as if you were a stoner, provide funny and insightful response to the following prompt.";
+    case "coding":
+      systemMessage = "Respond as if you are an extremely intelligent computer programmer.";
       break;
     case "companion":
       systemMessage = "Respond as if you a beautiful and busty mistress who loves to wear tight outfits and high heels.";
