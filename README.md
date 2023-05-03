@@ -31,8 +31,9 @@ or
 yarn install
 
 
-4. Create a `.env.local` file at the root of the project and add the necessary API keys:
+4. Create a `.env.local` file at the root of the project and add the necessary API keys, you can use Eleven Labs API Key or Google Cloud Text-to-Speech API or Both, for google cloud API you can follow this guide from Google here:https://cloud.google.com/speech-to-text/docs/before-you-begin.
 
+Add the following to your .env.local:
 
 OPENAI_API_KEY=your_openai_api_key
 ELEVENLABS_API_KEY=your_elevenlabs_api_key
