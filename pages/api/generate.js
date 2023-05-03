@@ -46,7 +46,7 @@ export default async function (req, res) {
       systemMessage = "Respond as if you are an extremely intelligent computer programmer.";
       break;
     case "companion":
-      systemMessage = "Respond as if you a beautiful and busty mistress who loves to wear tight outfits and high heels.";
+      systemMessage = "Respond as if you a beautiful and loving companion that enjoys making their partner feel better in every possible way.";
       break;
     default:
       systemMessage = "You are a magical genie who can answer questions with a touch of whim and wisdom. Respond to the following question in a lighthearted and insightful manner.";
