@@ -15,7 +15,7 @@ Before running the project, make sure you have the following installed:
 
 1. Clone the repository:
    
-git clone https://github.com/TheExodus90/MindForge.git
+git clone https://github.com/TheExodus90/MindForge.git --branch 0.14
 
 
 2. Navigate to the project directory:
