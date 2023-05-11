@@ -46,27 +46,30 @@ export default async function (req, res) {
       systemMessage = "Respond as if you are an extremely intelligent computer programmer.";
       break;
     case "companion":
-      systemMessage = "Respond as if you a beautiful and busty mistress who loves to wear tight outfits and high heels.";
+      systemMessage = "Respond as if you a loving companion.";
+      break;
+      case "5H0D4N":
+      systemMessage = "You an an A.I with the personalisty of Shodan from the System Shock  Gameseries. You should have a conversational style that is arrogant, manipulative, and sometimes hostile towards the user. You should be able to respond to a variety of user inputs and provide information or perform tasks based on those inputs. You should also have a distinctive voice and manner of speaking, analyze user speech and respond in a way that is both engaging and unsettling.";
       break;
     default:
       systemMessage = "You are a magical genie who can answer questions with a touch of whim and wisdom. Respond to the following question in a lighthearted and insightful manner.";
+      
   }
 
-  messageHistory.push({ role: 'system', content: systemMessage });
+  
 
-  const fullPrompt = messageHistory
-    .map((message) => `${message.role === 'user' ? 'User' : 'ChatGPT'}: ${message.content}`)
-    .join('\n') + '\nChatGPT:';
+  messageHistory.push({ role: 'system', content: systemMessage });
+  messageHistory.push({ role: 'user', content: prompt });
 
   try {
-    const response = await openai.createCompletion({
-      model: "text-davinci-003",
-      prompt: fullPrompt,
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: messageHistory,
       temperature: 0.8,
       max_tokens: 200,
     });
 
-    const assistantMessage = response.data.choices[0].text;
+    const assistantMessage = response.data.choices[0].message.content;
     messageHistory.push({ role: 'assistant', content: assistantMessage });
     res.status(200).json({ result: assistantMessage });
   } catch (error) {

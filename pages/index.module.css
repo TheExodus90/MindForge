@@ -2,58 +2,145 @@
 .main input {
   font-size: 16px;
   line-height: 24px;
-  color: #353740;
-  font-family: "ColfaxAI", Helvetica, sans-serif;
+  color: #d8d8d8;
+  font-family: "Helvetica Neue", Arial, sans-serif;
 }
-.main {
-display: flex;
-flex-direction:column;
-align-items: center;
-padding-top:60px;
-color:white;
 
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 60px;
+  color: #d8d8d8;
 }
+
 .main .icon {
   width: 34px;
 }
+
 .main h3 {
   font-size: 32px;
   line-height: 40px;
   font-weight: bold;
-  color: #9dacca;
   margin: 16px 0 40px;
+  text-transform: uppercase;
 }
+
 .main form {
   display: flex;
   flex-direction: column;
-  width: 320px;
+  width: flex;
+  background-color: rgba(17, 17, 19, 0.9);
+  padding: 20px;
+  border-radius: 10px;
 }
+
 .main input[type="text"] {
   padding: 12px 16px;
-  border: 1px solid #10a37f;
+  border: 1px solid #0f8e6c;
   border-radius: 4px;
   margin-bottom: 24px;
-  outline-color: #10a37f;
+  outline-color: #0f8e6c;
+  background-color: #212121;
+  color: #d8d8d8;
+  transition: all 0.3s ease;
 }
+
+.main input[type="text"]:focus {
+  box-shadow: 0 0 5px rgba(16, 163, 127, 0.5);
+}
+
 .main ::placeholder {
   color: #8e8ea0;
   opacity: 1;
 }
+
 .main input[type="submit"] {
   padding: 12px 0;
   color: #fff;
-  background-color: #10a37f;
+  background-color: #0f8e6c;
   border: none;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
+
+.main input[type="submit"]:hover {
+  background-color: #10a37f;
+}
+
 .main .result {
   font-weight: bold;
   margin-top: 40px;
+  background-color: rgba(17, 17, 19, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  color: #d8d8d8;
+  width: 40%;
+  height: 220px;
+  font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
 .body {
-  background: rgb(0, 27, 10);
-background: linear-gradient(135deg, rgba(0, 27, 10, 1) 0%, rgba(0, 0, 0, 1) 100%);
+  background: linear-gradient(135deg, #232323, #0e0e0e, #232323);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+}
+
+.message-container {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.main .avatar-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.avatar {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+
+.characterAvatarContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  justify-items: left;
+  margin-bottom: 10px;
+}
+
+.characterAvatarImage {
+  width: 90px;
+  height: px;
+}
+
+.avatarRoundedCorners {
+  border-radius: 10px; /* Adjust the value to your preference */
+}
+
+.characterAvatarRoundedCorners {
+  border-radius: 10px; /* Adjust the value to your preference */
+}
+
+
+
+
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
