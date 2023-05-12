@@ -1,6 +1,6 @@
 # MindForge
 
-MindForge is a web application that utilizes OpenAI's GPT-3 and ElevenLabs' text-to-speech API to generate human-like text and speech based on user input. This project is built using Next.js.
+MindForge is a web application that utilizes OpenAI's GPT-3 plus ElevenLabs and Google Cloud text-to-speech API's to generate human-like text and speech based on user input. This project is built using Next.js.
 
 ## Getting Started
 
