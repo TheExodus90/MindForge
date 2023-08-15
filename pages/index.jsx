@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import styles from "./index.module.css";
 import "isomorphic-fetch";
 
+
 export default function Home() {
   const [count, setCounter] = useState(0);
   const [promptInput, setPromptInput] = useState("");
@@ -13,15 +14,36 @@ export default function Home() {
   const [userAvatar, setUserAvatar] = useState("default");
   const [characterAvatar, setCharacterAvatar] = useState("/characterAvatars/genie.png");
   const [isLoading, setIsLoading] = useState(false);
-
-  
+  const [tokenCount, setTokenCount] = useState(0);
+  const [messageHistory, setMessageHistory] = useState([]);
+  const [totalTokens, setTotalTokens] = useState(0);
+  const avgModelResponseTokens = 260; // You might want to adjust this based on your specific use case
 
   async function onSubmit(e) {
     e.preventDefault();
-    setIsLoading(true); // Start loading
+    setIsLoading(true);
+  
+    const userInputTokens = Math.ceil(promptInput.length / 4);
+    let newTotalTokens = totalTokens + userInputTokens;
+    let newMessageHistory = [...messageHistory, {role: 'user', content: promptInput}];
+  
+    while (newTotalTokens > (4096 - avgModelResponseTokens)) {
+      const removedMessage = newMessageHistory.shift();
+      const removedTokens = Math.ceil(removedMessage.content.length / 4);
+      newTotalTokens -= removedTokens;
+    }
+  
+    // Update state
+    setTotalTokens(newTotalTokens);
+    setMessageHistory(newMessageHistory);
+    
+    console.log(`Total tokens used: ${newTotalTokens}`);
+    
+    e.preventDefault();
+    setIsLoading(true); 
 
     try {
-      if (count == 25) {
+      if (count == 50) {
         return console.log("you have reached your limit");
       }
 
@@ -48,19 +70,8 @@ export default function Home() {
       setPromptInput("");
 
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
-      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-AU-Wavenet-C" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
-  
-      console.log(`Type of voice: ${typeof voice}`);
-      console.log(`Type of ttsProvider: ${typeof ttsProvider}`);
-      console.log(`Type of voiceParam: ${typeof voiceParam}`);
-      console.log(`Value of voice: ${voice}`);
-      console.log(`Value of ttsProvider: ${ttsProvider}`);
-      console.log(`Value of voiceParam: ${voiceParam}`);
-      
-      
-      
+      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "de-DE-Neural2-F" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
-      
       const audioResponse = await fetch(ttsEndpoint, {
         method: "POST",
         headers: {
@@ -68,9 +79,7 @@ export default function Home() {
         },
         body: JSON.stringify({ text: data.result, voice: voiceParam }),
       });
-      console.log(`Sending voice to TTS API: ${voiceParam}`);
 
-      // Play the audio
       if (audioResponse.ok) {
         const audioBlob = await audioResponse.blob();
         const audioUrl = URL.createObjectURL(audioBlob);
@@ -84,14 +93,15 @@ export default function Home() {
       console.error(error);
       alert(error.message);
     } finally {
-      setIsLoading(false); // End loading
+      setIsLoading(false); 
     }
   }
 
-  
-useEffect(() => {
-  setCharacterAvatar(`/characterAvatars/${mode}.png`);
-}, [mode]);
+  useEffect(() => {
+    setCharacterAvatar(`/characterAvatars/${mode}.png`);
+  }, [mode]);
+
+
   return (
     <div className={styles.body} style={{ minHeight: "100vh" }}>
       <Head>
@@ -152,20 +162,20 @@ useEffect(() => {
 
 <label htmlFor="characterAssistant">
   <input type="radio" id="characterAssistant" name="mode" value="assistant" checked={mode === 'assistant'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/assistant.png" alt="Assistant" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
-  Your Assistant
+  <img src="/characterAvatars/assistant2.png" alt="Assistant" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  Assistant
 </label>
 
 <label htmlFor="characterSimplify">
   <input type="radio" id="characterSimplify" name="mode" value="simplify" checked={mode === 'simplify'} onChange={(e) => setMode(e.target.value)} />
   <img src="/characterAvatars/simplify.png" alt="Simplify" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
-  Simplify Bot
+  Simplify Anything
 </label>
 
-<label htmlFor="characterPositive">
-  <input type="radio" id="characterPositive" name="mode" value="positive" checked={mode === 'positive'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/positive.png" alt="Positive" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
-  Positive Affirmations
+<label htmlFor="characterCounselor">
+  <input type="radio" id="characterCounselor" name="mode" value="counselor" checked={mode === 'counselor'} onChange={(e) => setMode(e.target.value)} />
+  <img src="/characterAvatars/counselor.png" alt="Counselor" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  Counsellor
 </label>
 
 
@@ -178,13 +188,13 @@ useEffect(() => {
 <label htmlFor="characterCoding">
   <input type="radio" id="characterCoding" name="mode" value="coding" checked={mode === 'coding'} onChange={(e) => setMode(e.target.value)} />
   <img src="/characterAvatars/coding.png" alt="Coding Genius" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
-  Coding Genius
+  Coding Guru
 </label>
 
 <label htmlFor="characterCompanion">
   <input type="radio" id="characterCompanion" name="mode" value="companion" checked={mode === 'companion'} onChange={(e) => setMode(e.target.value)} />
   <img src="/characterAvatars/companion.png" alt="Companion" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
-  Companion
+  Friend
 </label>
 
 <label htmlFor="character5H0D4N">

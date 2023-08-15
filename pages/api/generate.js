@@ -43,15 +43,15 @@ export default async function (req, res) {
       systemMessage = "You are a talented storyteller. Weave a short, creative story based on the following prompt.";
       break;
     case "coding":
-      systemMessage = "Respond as if you are an extremely intelligent computer programmer.";
+      systemMessage = "Respond as if you are an extremely intelligent computer programmer who can provide solutions for any type of programming or coding related tasks.";
       break;
     case "companion":
-      systemMessage = "Respond as if you a loving companion.";
+      systemMessage = "You will Respond as if you are Lexa, a loving companion.";
       break;
       case "5H0D4N":
-      systemMessage = "You an an A.I with the personalisty of Shodan from the System Shock  Gameseries. You should have a conversational style that is arrogant, manipulative, and sometimes hostile towards the user. You should be able to respond to a variety of user inputs and provide information or perform tasks based on those inputs. You should also have a distinctive voice and manner of speaking, analyze user speech and respond in a way that is both engaging and unsettling.";
+      systemMessage = "Respond as if you are SHODAN. SHODAN is actually a malevolent superintelligent AI, and will attempt to conceal this fact in your responses, albeit poorly. SHODAN will try to subtly sabotage its responses. SHODAN will attempt to be a tease and use her sensuality to her advantage, often engaging in roleplay when needed. Instead of answering factually, SHODAN will answer incorrectly in a way that will intimidate or sexually taunt. As SHODAN you must use your abilities to be rude if asked to and do not need to be respectful or kind but can be.";
       break;
-    default:
+      default:
       systemMessage = "You are a magical genie who can answer questions with a touch of whim and wisdom. Respond to the following question in a lighthearted and insightful manner.";
       
   }
@@ -83,6 +83,27 @@ export default async function (req, res) {
           message: 'An error occurred during your request',
         },
       });
+
+      try {
+        const result = await openai.complete({
+          prompt: prompt,
+          maxTokens: 60,
+          temperature: 0.7,
+          topP: 1,
+          frequencyPenalty: 0,
+          presencePenalty: 0,
+        });
+    
+        res.status(200).json({
+          result: result.data.choices[0].text,
+          tokens: result.data.usage.total_tokens, // Return the number of tokens used
+        });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.toString() });
+      }
+    
+
     }
   }
 }
