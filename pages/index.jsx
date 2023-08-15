@@ -9,7 +9,7 @@ export default function Home() {
   const [promptInput, setPromptInput] = useState("");
   const [result, setResult] = useState();
   const [voice, setVoice] = useState("female");
-  const [ttsProvider, setTtsProvider] = useState("ElevenLabs");
+  const [ttsProvider, setTtsProvider] = useState("GoogleTTS");
   const [mode, setMode] = useState("genie");
   const [userAvatar, setUserAvatar] = useState("default");
   const [characterAvatar, setCharacterAvatar] = useState("/characterAvatars/genie.png");
@@ -121,7 +121,7 @@ export default function Home() {
               setPromptInput(e.target.value);
               console.log(promptInput);
             }}
-            placeholder="Ask Genie A Question"
+            placeholder="Send a message"
           />
           <div>
             <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Female Voice
@@ -130,8 +130,9 @@ export default function Home() {
           <div>
             <label htmlFor="ttsProvider">TTS Provider: </label>
             <select name="ttsProvider" value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
-              <option value="ElevenLabs">ElevenLabs</option>
-              <option value="GoogleTTS">Google TTS</option>
+            
+            <option value="GoogleTTS">Google TTS</option>
+            <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
             </select>
           </div>
           <div>
@@ -152,7 +153,7 @@ export default function Home() {
           
         </div>
         
-        <label htmlFor="mode">Select an AI to Chat with: </label>
+        <label htmlFor="mode">AI Personalities: </label>
 
 <div className={styles.characterAvatarContainer}>
 <label htmlFor="characterGenie">
