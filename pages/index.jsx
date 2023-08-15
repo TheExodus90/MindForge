@@ -72,6 +72,7 @@ export default function Home() {
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
       const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "de-DE-Neural2-F" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
+      console.log(`Voice parameter being sent to backend: ${voiceParam}`);
       const audioResponse = await fetch(ttsEndpoint, {
         method: "POST",
         headers: {
@@ -105,12 +106,12 @@ export default function Home() {
   return (
     <div className={styles.body} style={{ minHeight: "100vh" }}>
       <Head>
-        <title>Mind Forge</title>
+        <title>ExoFi Labs</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
         
-        <h3>Mind Forge</h3>
+        <h3>Mind Forge by ExoFi Labs</h3>
         <form onSubmit={onSubmit}>
           <input
             type="text"

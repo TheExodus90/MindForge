@@ -1,45 +1,49 @@
 import { TextToSpeechClient } from "@google-cloud/text-to-speech";
-import { config as loadEnvConfig } from "dotenv";
+import fs from "fs";
+import path from "path";
 
-loadEnvConfig();
-
-const client = new TextToSpeechClient({
-  keyFilename: process.env.GOOGLE_APPLICATION_CREDENTIALS,
-});
-
-export default async function (req, res) {
+export default async function handler(req, res) {
   const { text, voice } = req.body;
 
-  console.log(`Received voice: ${voice}`);
-
-  const voiceConfig = {
-    name: voice,
-    languageCode: voice.slice(0, 5),
-    ssmlGender: voice === "en-US-Wavenet-D" ? "MALE" : "FEMALE",
-  };
-  console.log(`Received voiceConfig: ${JSON.stringify(voiceConfig)}`);
-
-  const audioConfig = {
-    audioEncoding: "MP3",
-  };
-
-  const request = {
-    input: { text },
-    voice: voiceConfig,
-    audioConfig,
-  };
+  // This logs the voice parameter each time the function is triggered.
+  console.log(`Voice parameter received in backend: ${voice}`);
 
   try {
+    let credentials;
+
+    // Check if we're in a development environment
+    if (process.env.NODE_ENV === 'development') {
+      // Load credentials from the local .json file
+      const credentialsPath = path.join(process.cwd(), 'burnished-ray-380807-6a2adfb349ba.json');
+      credentials = JSON.parse(fs.readFileSync(credentialsPath, 'utf8'));
+    } else {
+      // Parse the credentials from environment variable for production
+      credentials = JSON.parse(process.env.GOOGLE_CREDENTIALS);
+    }
+
+    const client = new TextToSpeechClient({ credentials });
+
+    const voiceConfig = {
+      name: voice,
+      languageCode: voice.slice(0, 5),
+      ssmlGender: voice === "en-US-Wavenet-D" ? "MALE" : "FEMALE",
+    };
+    console.log(`Voice configuration: ${JSON.stringify(voiceConfig)}`);
+
+    const request = {
+      input: { text },
+      voice: voiceConfig,
+      audioConfig: { audioEncoding: "MP3" },
+    };
+
     const [response] = await client.synthesizeSpeech(request);
-    const audioContent = response.audioContent;
+    const audio = response.audioContent;
+
     res.setHeader("Content-Type", "audio/mpeg");
-    res.send(Buffer.from(audioContent, "binary"));
-  } catch (error) {
-    console.error(`Error with Google TTS API request: ${error.message}`);
-    res.status(500).json({
-      error: {
-        message: "An error occurred during your request",
-      },
-    });
+    res.setHeader("Cache-Control", "public, max-age=3600, must-revalidate");
+    res.send(audio);
+  } catch (err) {
+    console.error(`Failed to generate audio: ${err}`);
+    res.status(500).send(`Failed to generate audio: ${err}`);
   }
 }
