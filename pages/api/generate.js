@@ -59,7 +59,7 @@ export default async function (req, res) {
   
 
   messageHistory.push({ role: 'system', content: systemMessage });
-  messageHistory.push({ role: 'user', content: prompt });
+
 
   try {
     const response = await openai.createChatCompletion({

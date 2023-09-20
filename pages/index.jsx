@@ -70,7 +70,7 @@ export default function Home() {
       setPromptInput("");
 
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
-      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "de-DE-Neural2-F" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
+      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-GB-News-H" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
       console.log(`Voice parameter being sent to backend: ${voiceParam}`);
       const audioResponse = await fetch(ttsEndpoint, {
@@ -153,7 +153,7 @@ export default function Home() {
           
         </div>
         
-        <label htmlFor="mode">AI Personalities: </label>
+        <label htmlFor="mode">Select an AI to Chat with: </label>
 
 <div className={styles.characterAvatarContainer}>
 <label htmlFor="characterGenie">
