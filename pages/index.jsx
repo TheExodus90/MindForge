@@ -2,6 +2,7 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import styles from "./index.module.css";
 import "isomorphic-fetch";
+import { Analytics } from '@vercel/analytics/react';
 
 
 export default function Home() {
@@ -252,7 +253,9 @@ export default function Home() {
   style={{width: '37.5%', height: '275px'}}
   placeholder="Generated response will appear here"
 />
+<Analytics />
 </main>
+
 </div>
 
   );
