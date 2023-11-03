@@ -45,18 +45,23 @@ const initializeAnonymousSession = () => {
 };
 
 const checkMessageCount = () => {
+  // Only check message count for anonymous users
+  if (session) {
+    return true; // Skip check for signed-in users
+  }
+
   let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
   let remaining = 5 - messageCount;
   setRemainingMessages(remaining);
+
   if (messageCount >= 5) {
     setUserMessage("Free usage limit reached, please sign up for a free account to increase your usage limit ");
-    setTimeout(() => {
-      router.push('/usersignup');
-    }, 7000);
+    
     return false;
   }
   return true;
 };
+
 
 
 
@@ -67,7 +72,7 @@ useEffect(() => {
     initializeAnonymousSession();
     checkMessageCount();
   }
-}, [session]);
+}, [session]); // Depend on session state
 
 
 
@@ -186,12 +191,12 @@ const onSubmit = async (e) => {
         <h3>Mind Forge by ExoFi Labs</h3>
 
         {/* display User Message Display */}
-        <div>
+      <div>
         {userMessage && (
-        <div className={styles.userMessage}>
-        {userMessage}
-        <Link href="/usersignup">here</Link>.
-        </div>
+          <div className={styles.userMessage}>
+            {userMessage}
+            <Link href="/usersignup">here</Link>.
+          </div>
         )}
       </div>
 
@@ -200,10 +205,11 @@ const onSubmit = async (e) => {
           {session ? (
             <>
               <div>Welcome, {session.user.email}!</div>
-              
               <button onClick={handleLogout}>Logout</button>
               
               <div> {!session && (<div>You have {remainingMessages} free messages remaining.</div>  )}
+
+              
               
 </div>
 
