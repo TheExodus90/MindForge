@@ -3,6 +3,13 @@ import { useState, useEffect } from "react";
 import styles from "./index.module.css";
 import "isomorphic-fetch";
 import { Analytics } from '@vercel/analytics/react';
+import Link from 'next/link';
+import { useAuth } from '../context/authContext';
+import { useRouter } from 'next/router';
+import { supabase } from '../utils/supabaseClient'; // Make sure to import your initialized Supabase client
+import { v4 as uuidv4 } from 'uuid';
+
+
 
 
 export default function Home() {
@@ -19,10 +26,59 @@ export default function Home() {
   const [messageHistory, setMessageHistory] = useState([]);
   const [totalTokens, setTotalTokens] = useState(0);
   const avgModelResponseTokens = 260; // You might want to adjust this based on your specific use case
+  const router = useRouter();
+  const { session, signOut } = useAuth();
+  const [remainingMessages, setRemainingMessages] = useState(5);
+  const [userMessage, setUserMessage] = useState("");
 
-  async function onSubmit(e) {
-    e.preventDefault();
-    setIsLoading(true);
+
+  
+// Function to check or initialize anonymous session
+const initializeAnonymousSession = () => {
+  let session = localStorage.getItem('anonymousSession');
+  if (!session) {
+    session = uuidv4(); // Generate a unique session ID
+    localStorage.setItem('anonymousSession', session);
+    localStorage.setItem('messageCount', '0');
+  }
+  return session;
+};
+
+const checkMessageCount = () => {
+  let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
+  let remaining = 5 - messageCount;
+  setRemainingMessages(remaining);
+  if (messageCount >= 5) {
+    setUserMessage("Free usage limit reached, please sign up for a free account to increase your usage limit ");
+    setTimeout(() => {
+      router.push('/usersignup');
+    }, 7000);
+    return false;
+  }
+  return true;
+};
+
+
+
+
+// Run this effect when the app starts
+useEffect(() => {
+  if (!session) {
+    initializeAnonymousSession();
+    checkMessageCount();
+  }
+}, [session]);
+
+
+
+
+const onSubmit = async (e) => {
+  e.preventDefault();
+  setIsLoading(true);
+
+  if (!session && !checkMessageCount()) {
+    return; // Early return if message limit is reached
+  }
   
     const userInputTokens = Math.ceil(promptInput.length / 4);
     let newTotalTokens = totalTokens + userInputTokens;
@@ -33,6 +89,12 @@ export default function Home() {
       const removedTokens = Math.ceil(removedMessage.content.length / 4);
       newTotalTokens -= removedTokens;
     }
+
+     // If an anonymous user sends a message, increment the message count
+     if (!session) {
+     let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
+     localStorage.setItem('messageCount', (messageCount + 1).toString());
+     }
   
     // Update state
     setTotalTokens(newTotalTokens);
@@ -70,6 +132,8 @@ export default function Home() {
       setCounter(count + 1);
       setPromptInput("");
 
+     
+
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
       const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-GB-News-H" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
@@ -103,6 +167,14 @@ export default function Home() {
     setCharacterAvatar(`/characterAvatars/${mode}.png`);
   }, [mode]);
 
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (!error) {
+      // Handle successful logout if needed, like redirecting to a home page
+    } else {
+      console.error('Logout failed:', error);
+    }
+  };
 
   return (
     <div className={styles.body} style={{ minHeight: "100vh" }}>
@@ -111,8 +183,43 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        
         <h3>Mind Forge by ExoFi Labs</h3>
+
+        {/* display User Message Display */}
+        <div>
+        {userMessage && (
+        <div className={styles.userMessage}>
+        {userMessage}
+        <Link href="/usersignup">here</Link>.
+        </div>
+        )}
+      </div>
+
+
+        <div>
+          {session ? (
+            <>
+              <div>Welcome, {session.user.email}!</div>
+              {userMessage && <div className={styles.userMessage}>{userMessage}</div>}
+              <button onClick={handleLogout}>Logout</button>
+              
+              <div> {!session && (<div>You have {remainingMessages} free messages remaining.</div>  )}
+              
+</div>
+
+            </>
+          ) : (
+            <>
+              <Link href="/usersignup">Sign Up |</Link> 
+              <Link href="/login">Login</Link>
+            </>
+          )}
+        </div>
+
+
+        
+      
+        
         <form onSubmit={onSubmit}>
           <input
             type="text"
@@ -254,9 +361,13 @@ export default function Home() {
   placeholder="Generated response will appear here"
 />
 <Analytics />
+
+
+
 </main>
 
 </div>
 
   );
 }
+

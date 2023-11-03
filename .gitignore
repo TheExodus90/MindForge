@@ -37,3 +37,8 @@ pages\api\burnished-ray-380807-6a2adfb349ba.json
 #Redundant Files
 pages\api\generatecopy.js
 pages\api\davinci.js
+pages\api\signup.js
+pages\api\signupVercel.js
+supabasefetch.js
+transcribe.js
+VoiceList11labs.txt
