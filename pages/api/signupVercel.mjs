@@ -4,8 +4,6 @@ import { dirname } from 'path';
 import dotenv from 'dotenv';
 import path from 'path';
 
-console.log('SUPABASE_URL:', process.env.SUPABASE_URL);
-console.log('SUPABASE_API_KEY:', process.env.SUPABASE_API_KEY);
 
 
 // Load environment variables from the .env file

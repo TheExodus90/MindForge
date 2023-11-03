@@ -200,7 +200,7 @@ const onSubmit = async (e) => {
           {session ? (
             <>
               <div>Welcome, {session.user.email}!</div>
-              {userMessage && <div className={styles.userMessage}>{userMessage}</div>}
+              
               <button onClick={handleLogout}>Logout</button>
               
               <div> {!session && (<div>You have {remainingMessages} free messages remaining.</div>  )}

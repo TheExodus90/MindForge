@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css"; 
-import supabase from '../supabase-client';  // Adjust the import path to match your project structure
+import { supabase } from '../config/supabaseClient';
 import TermsOfService from './api/terms'; // Import the TermsOfService component
 
 function SignUpPage() {
