@@ -28,7 +28,7 @@ export default function Home() {
   const avgModelResponseTokens = 260; // You might want to adjust this based on your specific use case
   const router = useRouter();
   const { session, signOut } = useAuth();
-  const [remainingMessages, setRemainingMessages] = useState(5);
+  const [remainingMessages, setRemainingMessages] = useState(10);
   const [userMessage, setUserMessage] = useState("");
 
 
@@ -51,10 +51,10 @@ const checkMessageCount = () => {
   }
 
   let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
-  let remaining = 5 - messageCount;
+  let remaining = 10 - messageCount;
   setRemainingMessages(remaining);
 
-  if (messageCount >= 5) {
+  if (messageCount >= 10) {
     setUserMessage("Free usage limit reached, please sign up for a free account to increase your usage limit ");
     
     return false;
