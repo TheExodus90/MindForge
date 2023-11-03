@@ -1,10 +1,6 @@
-module.exports = {
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.experiments = { topLevelAwait: true };
-    }
-    return config;
-  },
-};
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+}
 
-future: { webpack5: true }
+module.exports = nextConfig
