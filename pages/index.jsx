@@ -69,8 +69,11 @@ const checkMessageCount = () => {
 // Run this effect when the app starts
 useEffect(() => {
   if (!session) {
+    console.log('Initializing anonymous session...');
     initializeAnonymousSession();
-    checkMessageCount();
+    const messageCheckPassed = checkMessageCount();
+    console.log(`Message check passed: ${messageCheckPassed}`);
+    console.log(`Remaining messages: ${remainingMessages}`);
   }
 }, [session]); // Depend on session state
 
@@ -190,6 +193,13 @@ const onSubmit = async (e) => {
       <main className={styles.main}>
         <h3>Mind Forge by ExoFi Labs</h3>
 
+      {/* New div with links to login and signup */}
+      <div className={styles.linksContainer}>
+            <Link href="/login">Login</Link> | 
+            <Link href="/usersignup">Sign Up</Link>
+      </div>
+
+
         {/* display User Message Display */}
       <div>
         {userMessage && (
@@ -200,30 +210,23 @@ const onSubmit = async (e) => {
         )}
       </div>
 
+      <div>
+  {!session && (
+    <div>
+      You have {remainingMessages} free messages remaining.
+    </div>
+  )}
 
-        <div>
-          {session ? (
-            <>
-              <div>Welcome, {session.user.email}!</div>
-              <button onClick={handleLogout}>Logout</button>
-              
-              <div> {!session && (<div>You have {remainingMessages} free messages remaining.</div>  )}
 
-              
-              
+
+
+ 
+
+
+
+
 </div>
-
-            </>
-          ) : (
-            <>
-              <Link href="/usersignup">Sign Up |</Link> 
-              <Link href="/login">Login</Link>
-            </>
-          )}
-        </div>
-
-
-        
+  
       
         
         <form onSubmit={onSubmit}>

@@ -1,5 +1,6 @@
 // _app.js
 import styles from "./index.module.css";
+import '../styles/globals.css';
 import { AuthProvider } from '../context/authContext'; // Import the AuthProvider
 
 function MyApp({ Component, pageProps }) {

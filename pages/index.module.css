@@ -22,7 +22,7 @@
   font-size: 32px;
   line-height: 40px;
   font-weight: bold;
-  margin: 16px 0 40px;
+  margin: 16px 0 10px;
   text-transform: uppercase;
 }
 
@@ -144,4 +144,9 @@
   100% {
     background-position: 0% 50%;
   }
+}
+
+.linksContainer {
+  margin-top: 5px; /* Example style */
+  text-align: center; /* Example style */
 }
