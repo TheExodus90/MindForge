@@ -51,7 +51,7 @@ const checkMessageCount = () => {
   }
 
   let messageCount = parseInt(localStorage.getItem('messageCount'), 5);
-  let remaining = 10 - messageCount;
+  let remaining = 5 - messageCount;
   setRemainingMessages(remaining);
 
   if (messageCount >= 5) {
@@ -100,7 +100,7 @@ const onSubmit = async (e) => {
 
      // If an anonymous user sends a message, increment the message count
      if (!session) {
-     let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
+     let messageCount = parseInt(localStorage.getItem('messageCount'), 5);
      localStorage.setItem('messageCount', (messageCount + 1).toString());
      }
   
