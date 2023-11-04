@@ -50,7 +50,7 @@ const checkMessageCount = () => {
     return true; // Skip check for signed-in users
   }
 
-  let messageCount = parseInt(localStorage.getItem('messageCount'), 5);
+  let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
   let remaining = 5 - messageCount;
   setRemainingMessages(remaining);
 
