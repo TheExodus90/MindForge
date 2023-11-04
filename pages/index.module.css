@@ -150,3 +150,10 @@
   margin-top: 5px; /* Example style */
   text-align: center; /* Example style */
 }
+
+
+.buttonDisabled {
+  background-color: grey;
+  color: white;
+  /* Add any other styling you want for the disabled button */
+}

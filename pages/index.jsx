@@ -178,7 +178,7 @@ const onSubmit = async (e) => {
   const handleLogout = async () => {
     const { error } = await signOut();
     if (!error) {
-      // Handle successful logout if needed, like redirecting to a home page
+      router.push('/'); // Redirect to the main page after successful logout
     } else {
       console.error('Logout failed:', error);
     }
@@ -193,22 +193,20 @@ const onSubmit = async (e) => {
       <main className={styles.main}>
         <h3>Mind Forge by ExoFi Labs</h3>
 
-      {/* New div with links to login and signup */}
-      <div className={styles.linksContainer}>
+       {/* Conditional rendering based on session */}
+       {!session ? (
+          <div className={styles.linksContainer}>
             <Link href="/login">Login</Link> | 
             <Link href="/usersignup">Sign Up</Link>
-      </div>
-
-
-        {/* display User Message Display */}
-      <div>
-        {userMessage && (
-          <div className={styles.userMessage}>
-            {userMessage}
-            <Link href="/usersignup">here</Link>.
+          </div>
+        ) : (
+          <div className={styles.welcomeLogoutContainer}>
+            <span>Welcome, {session.user.email}!</span> {/* Display the user's email or name */}
+            <button onClick={handleLogout}>Logout</button>
           </div>
         )}
-      </div>
+
+        
 
       <div>
   {!session && (
@@ -360,7 +358,15 @@ const onSubmit = async (e) => {
 
   </div>
 {/* ... */}
-<input type="submit" value={isLoading ? "Loading..." : "Generate Response"} disabled={isLoading} />
+
+
+<input
+  type="submit"
+  className={remainingMessages <= 0 ? styles.buttonDisabled : ""}
+  value={isLoading ? "Loading..." : "Generate Response"}
+  disabled={isLoading || remainingMessages <= 0}
+/>
+
 </form>
 <textarea
   className={styles.result}
