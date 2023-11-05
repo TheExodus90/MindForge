@@ -249,6 +249,7 @@ const onSubmit = async (e) => {
               <option value="coding">Coding Genius</option>
               <option value="companion">Companion</option>
               <option value="5H0D4N">5H0D4N</option>
+              <option value="counselor">Counselor</option>
             </select>
           </div>
           <div>
