@@ -1,9 +1,12 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap');
+
+
 .main,
 .main input {
   font-size: 16px;
   line-height: 24px;
   color: #d8d8d8;
-  font-family: "Helvetica Neue", Arial, sans-serif;
+  font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
 }
 
 .main {
@@ -117,7 +120,7 @@
 }
 
 .characterAvatarImage {
-  width: 90px;
+  width: 130px;
   height: px;
 }
 
@@ -149,11 +152,4 @@
 .linksContainer {
   margin-top: 5px; /* Example style */
   text-align: center; /* Example style */
-}
-
-
-.buttonDisabled {
-  background-color: grey;
-  color: white;
-  /* Add any other styling you want for the disabled button */
 }

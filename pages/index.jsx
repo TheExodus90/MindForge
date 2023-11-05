@@ -45,22 +45,16 @@ const initializeAnonymousSession = () => {
 };
 
 const checkMessageCount = () => {
-  // Only check message count for anonymous users
-  if (session) {
-    return true; // Skip check for signed-in users
-  }
-
-  let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
-  let remaining = 5 - messageCount;
-  setRemainingMessages(remaining);
-
-  if (messageCount >= 5) {
-    setUserMessage("Free usage limit reached, please sign up for a free account to increase your usage limit ");
-    
-    return false;
-  }
-  return true;
-};
+    if (session) return true; // Skip check for signed-in users
+    let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
+    let remaining = 5 - messageCount;
+    setRemainingMessages(remaining);
+    if (messageCount >= 5) {
+      setUserMessage("You have reached the free usage limit, please sign up for a free account to increase your usage limit ");
+      return false;
+    }
+    return true;
+  };
 
 
 
@@ -203,7 +197,8 @@ const onSubmit = async (e) => {
           <div className={styles.welcomeLogoutContainer}>
             <span>Welcome, {session.user.email}!</span> {/* Display the user's email or name */}
             <button onClick={handleLogout}>Logout</button>
-          </div>
+          </div> 
+            
         )}
 
         
@@ -214,13 +209,6 @@ const onSubmit = async (e) => {
       You have {remainingMessages} free messages remaining.
     </div>
   )}
-
-
-
-
- 
-
-
 
 
 </div>
@@ -267,59 +255,67 @@ const onSubmit = async (e) => {
           <div className={styles.characterAvatarContainer}>
           
         </div>
+        </div>
         
         <label htmlFor="mode">Select an AI to Chat with: </label>
 
 <div className={styles.characterAvatarContainer}>
 <label htmlFor="characterGenie">
   <input type="radio" id="characterGenie" name="mode" value="genie" checked={mode === 'genie'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/genie.png" alt="Genie" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/genie.png" alt="Genie" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   Genie
 </label>
 
 <label htmlFor="characterAssistant">
   <input type="radio" id="characterAssistant" name="mode" value="assistant" checked={mode === 'assistant'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/assistant2.png" alt="Assistant" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   Assistant
 </label>
 
 <label htmlFor="characterSimplify">
   <input type="radio" id="characterSimplify" name="mode" value="simplify" checked={mode === 'simplify'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/simplify.png" alt="Simplify" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   Simplify Anything
 </label>
 
 <label htmlFor="characterCounselor">
   <input type="radio" id="characterCounselor" name="mode" value="counselor" checked={mode === 'counselor'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/counselor.png" alt="Counselor" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   Counsellor
 </label>
 
 
 <label htmlFor="characterStorytelling">
   <input type="radio" id="characterStorytelling" name="mode" value="storytelling" checked={mode === 'storytelling'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/storytelling.png" alt="Storytelling" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   The Storyteller
 </label>
 
 <label htmlFor="characterCoding">
   <input type="radio" id="characterCoding" name="mode" value="coding" checked={mode === 'coding'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/coding.png" alt="Coding Genius" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   Coding Guru
 </label>
 
 <label htmlFor="characterCompanion">
   <input type="radio" id="characterCompanion" name="mode" value="companion" checked={mode === 'companion'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/companion.png" alt="Companion" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/companion.png" alt="Companion" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   Friend
 </label>
 
 <label htmlFor="character5H0D4N">
   <input type="radio" id="character5H0D4N" name="mode" value="5H0D4N" checked={mode === '5H0D4N'} onChange={(e) => setMode(e.target.value)} />
-  <img src="/characterAvatars/5H0D4N.png" alt="5H0D4N" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
+  <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={`${styles.characterAvatarImage} ${styles.characterAvatarRoundedCorners}`} />
   5H0D4N
 </label>
-  
+
+
+
+
+
+{/*
+
+
 </div>
 
   <label htmlFor="userAvatar">Your Avatar: </label>
@@ -353,6 +349,8 @@ const onSubmit = async (e) => {
       
     </label>
   </div>
+
+*/}
 
 
 
