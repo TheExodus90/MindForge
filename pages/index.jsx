@@ -52,7 +52,7 @@ const checkMessageCount = () => {
   console.log('Parsed messageCount:', messageCount); // Debugging line
   let remaining = 5 - messageCount;
   setRemainingMessages(remaining);
-  if (messageCount >= 5) {
+  if (messageCount >= 5 || remaining < 0) {
     setUserMessage("You have reached the free usage limit, please sign up for a free account to increase your usage limit ");
     return false;
   }
