@@ -228,7 +228,7 @@ const onSubmit = async (e) => {
       <div>
   {!session && (
     <div>
-      You have {remainingMessages} free messages remaining.
+      You have {remainingMessages} free messages remaining. Please sign up for a free account to increase your usage limit.
     </div>
   )}
 
