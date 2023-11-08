@@ -211,7 +211,7 @@ const onSubmit = async (e) => {
        {!session ? (
           <div className={styles.linksContainer}>
             <Link href="/login">Login |</Link> 
-            <Link href="/usersignup"> Sign Up | </Link>
+            <Link href="/usersignup"> Sign Up </Link>
             
           </div>
         ) : (
