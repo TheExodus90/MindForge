@@ -45,16 +45,19 @@ const initializeAnonymousSession = () => {
 };
 
 const checkMessageCount = () => {
-    if (session) return true; // Skip check for signed-in users
-    let messageCount = parseInt(localStorage.getItem('messageCount'), 10);
-    let remaining = 5 - messageCount;
-    setRemainingMessages(remaining);
-    if (messageCount >= 5) {
-      setUserMessage("You have reached the free usage limit, please sign up for a free account to increase your usage limit ");
-      return false;
-    }
-    return true;
-  };
+  if (session) return true; // Skip check for signed-in users
+  const storedMessageCount = localStorage.getItem('messageCount');
+  console.log('Stored messageCount from localStorage:', storedMessageCount); // Debugging line
+  let messageCount = parseInt(storedMessageCount, 10);
+  console.log('Parsed messageCount:', messageCount); // Debugging line
+  let remaining = 5 - messageCount;
+  setRemainingMessages(remaining);
+  if (messageCount >= 5) {
+    setUserMessage("You have reached the free usage limit, please sign up for a free account to increase your usage limit ");
+    return false;
+  }
+  return true;
+};
 
 
 
@@ -74,6 +77,23 @@ useEffect(() => {
 
 
 
+
+// Function to insert interaction into the Supabase database
+async function insertInteraction(userId, conversationId, text) {
+    const { data, error } = await supabase
+        .from('OdysseyInteractions')
+        .insert([
+            { user_id: userId, conversation_id: conversationId, text: text, created_at: new Date().toISOString() }
+        ]);
+
+    if (error) {
+        console.error('Error inserting interaction:', error);
+        return false;
+    }
+
+    console.log('Interaction inserted:', data);
+    return true;
+}
 const onSubmit = async (e) => {
   e.preventDefault();
   setIsLoading(true);
@@ -94,8 +114,8 @@ const onSubmit = async (e) => {
 
      // If an anonymous user sends a message, increment the message count
      if (!session) {
-     let messageCount = parseInt(localStorage.getItem('messageCount'), 5);
-     localStorage.setItem('messageCount', (messageCount + 1).toString());
+      let messageCount = parseInt(localStorage.getItem('messageCount'), 10); // Corrected radix parameter
+      localStorage.setItem('messageCount', (messageCount + 1).toString());
      }
   
     // Update state
@@ -190,14 +210,16 @@ const onSubmit = async (e) => {
        {/* Conditional rendering based on session */}
        {!session ? (
           <div className={styles.linksContainer}>
-            <Link href="/login">Login</Link> | 
-            <Link href="/usersignup">Sign Up</Link>
+            <Link href="/login">Login |</Link> 
+            <Link href="/usersignup"> Sign Up | </Link>
+            
           </div>
         ) : (
           <div className={styles.welcomeLogoutContainer}>
             <span>Welcome, {session.user.email}!</span> {/* Display the user's email or name */}
             <button onClick={handleLogout}>Logout</button>
           </div> 
+          
             
         )}
 
