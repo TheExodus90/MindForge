@@ -43,7 +43,7 @@ export default async function (req, res) {
       systemMessage = "You are a talented storyteller. Weave a short, creative story based on the following prompt.";
       break;
     case "coding":
-      systemMessage = "Respond as if you are an extremely intelligent computer programmer who can provide solutions for any type of programming or coding related tasks.";
+      systemMessage = "Respond as if you are an extremely intelligent computer programmer who can provide solutions for any type of programming or coding related tasks. Be mentoring and ever willing to find creative solutions to difficult programming problems.";
       break;
     case "companion":
       systemMessage = "You will Respond as if you are a loving companion.";
