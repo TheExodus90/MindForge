@@ -61,10 +61,19 @@ const initializeAnonymousSession = () => {
   if (!session) {
     session = uuidv4(); // Generate a unique session ID
     localStorage.setItem('anonymousSession', session);
-    localStorage.setItem('messageCount', '0');
+    localStorage.setItem('anonymousMessageCount', '0');
   }
-  return session;
+  updateRemainingMessages(); // Update remaining messages based on the new or existing session
 };
+
+const updateRemainingMessages = () => {
+  const messageCount = session 
+    ? parseInt(localStorage.getItem('userMessageCount') || '0', 10)
+    : parseInt(localStorage.getItem('anonymousMessageCount') || '0', 10);
+  setRemainingMessages(5 - messageCount);
+};
+
+
 
 const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
@@ -150,10 +159,11 @@ const onSubmit = async (e) => {
 
      // If an anonymous user sends a message, increment the message count
      if (!session) {
-      let messageCount = parseInt(session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount'), 10); // Corrected radix parameter
-      const key = session ? 'userMessageCount' : 'anonymousMessageCount';
+      const key = 'anonymousMessageCount';
+      let messageCount = parseInt(localStorage.getItem(key), 10);
       localStorage.setItem(key, (messageCount + 1).toString());
-     }
+      updateRemainingMessages(); // Update the remaining messages state
+    }
   
     // Update state
     setTotalTokens(newTotalTokens);
@@ -231,18 +241,12 @@ const onSubmit = async (e) => {
   }
 
   
-useEffect(() => {
-  if (session) {
-    // Reset user message count
-    localStorage.setItem('userMessageCount', '0');
-    setRemainingMessages(5);
-  } else {
-    // Handle anonymous user logic
-    console.log('Initializing anonymous session...');
-    initializeAnonymousSession();
-    checkMessageCount();
-  }
-}, [session]);
+  useEffect(() => {
+    if (session) {
+      localStorage.setItem('userMessageCount', '0');
+    }
+    updateRemainingMessages();
+  }, [session]);
 
 useEffect(() => {
     setCharacterAvatar(`/characterAvatars/${mode}.png`);
