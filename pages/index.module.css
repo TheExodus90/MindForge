@@ -32,9 +32,9 @@
 .main form {
   display: flex;
   flex-direction: column;
-  width: flex;
+  width: 100%;
   background-color: rgba(17, 17, 19, 0.9);
-  padding: 20px;
+  padding: 0px;
   border-radius: 10px;
 }
 
