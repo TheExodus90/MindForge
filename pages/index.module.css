@@ -1,43 +1,54 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600&display=swap');
 
-
-.main,
-.main input {
-  font-size: 16px;
-  line-height: 24px;
-  color: #d8d8d8;
+/* Base class for applying reset styles */
+.base {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
 }
 
+/* Body styles for background and font */
+.body {
+  font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #232323, #0e0e0e, #0a3b09);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  color: #d8d8d8;
+  line-height: 24px;
+}
+
+/* Main container styling */
 .main {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding-top: 60px;
-  color: #d8d8d8;
 }
 
-.main .icon {
-  width: 34px;
-}
-
+/* Styling for headings */
 .main h3 {
   font-size: 32px;
   line-height: 40px;
-  font-weight: bold;
+  font-weight: 600; /* Using weight from imported font */
   margin: 16px 0 10px;
   text-transform: uppercase;
+  color: #d8d8d8;
 }
 
+/* Form styling */
 .main form {
   display: flex;
   flex-direction: column;
-  width: flex;
+  width: auto;
+  max-width: 80%; /* Responsive max-width */
   background-color: rgba(17, 17, 19, 0.9);
   padding: 20px;
   border-radius: 10px;
+  margin-bottom: 20px;
 }
 
+/* Text input styling */
 .main input[type="text"] {
   padding: 12px 16px;
   border: 1px solid #0f8e6c;
@@ -49,15 +60,17 @@
   transition: all 0.3s ease;
 }
 
+/* Text input focus effect */
 .main input[type="text"]:focus {
   box-shadow: 0 0 5px rgba(16, 163, 127, 0.5);
 }
 
+/* Placeholder styling */
 .main ::placeholder {
   color: #8e8ea0;
-  opacity: 1;
 }
 
+/* Submit button styling */
 .main input[type="submit"] {
   padding: 12px 0;
   color: #fff;
@@ -69,74 +82,56 @@
   transition: all 0.3s ease;
 }
 
+/* Hover effect on submit button */
 .main input[type="submit"]:hover {
   background-color: #10a37f;
 }
 
+/* Result box styling */
 .main .result {
   font-weight: bold;
   margin-top: 40px;
   background-color: rgba(17, 17, 19, 0.9);
   padding: 20px;
   border-radius: 10px;
-  color: #d8d8d8;
-  width: 40%;
+  width: 100%;
+  max-width: 80%; /* Responsive max-width */
   height: 220px;
-  font-family: "Helvetica Neue", Arial, sans-serif;
 }
 
-.body {
-  background: linear-gradient(135deg, #232323, #0e0e0e, #0a3b09);
-  background-size: 400% 400%;
-  animation: gradient 10s ease infinite;
-}
-
-.message-container {
-  display: flex;
-  align-items: flex-start;
-  margin-bottom: 10px;
-}
-
+/* Avatar container styles */
 .main .avatar-container {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   margin-top: 10px;
 }
 
+/* Avatar styling */
 .avatar {
-  width: 90px;
-  height: 90px;
+  width: 120px;
+  height: 120px;
   border-radius: 50%;
-  margin-right: 10px;
-  margin-bottom: 10px;
+  margin: 5px;
 }
 
+/* Character avatar container */
 .characterAvatarContainer {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
   grid-gap: 10px;
-  justify-items: left;
+  justify-items: center;
   margin-bottom: 10px;
 }
 
+/* Character avatar image */
 .characterAvatarImage {
-  width: 130px;
-  height: px;
+  width: 100%;
+  height: auto;
+  border-radius: 10px; /* Rounded corners */
 }
 
-.avatarRoundedCorners {
-  border-radius: 10px; /* Adjust the value to your preference */
-}
-
-.characterAvatarRoundedCorners {
-  border-radius: 10px; /* Adjust the value to your preference */
-}
-
-
-
-
-
-
+/* Keyframes for gradient animation */
 @keyframes gradient {
   0% {
     background-position: 0% 50%;
@@ -149,7 +144,20 @@
   }
 }
 
+/* Links container for additional styling */
 .linksContainer {
-  margin-top: 5px; /* Example style */
-  text-align: center; /* Example style */
+  margin-top: 5px;
+  text-align: center;
+}
+
+/* Responsive design adjustments for smaller screens */
+@media (max-width: 600px) {
+  .main form,
+  .main .result {
+    max-width: 90%;
+  }
+
+  .main h3 {
+    font-size: 24px;
+  }
 }
