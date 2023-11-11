@@ -68,7 +68,7 @@ const initializeAnonymousSession = () => {
 
 const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
-  const storedMessageCount = localStorage.getItem('messageCount');
+  const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
   console.log('Stored messageCount from localStorage:', storedMessageCount); // Debugging line
   let messageCount = parseInt(storedMessageCount, 10);
   console.log('Parsed messageCount:', messageCount); // Debugging line
@@ -86,6 +86,20 @@ const checkMessageCount = () => {
 
 
 // Run this effect when the app starts
+
+useEffect(() => {
+  if (session) {
+    // Reset user message count
+    localStorage.setItem('userMessageCount', '0');
+    setRemainingMessages(5);
+  } else {
+    // Handle anonymous user logic
+    console.log('Initializing anonymous session...');
+    initializeAnonymousSession();
+    checkMessageCount();
+  }
+}, [session]);
+
 useEffect(() => {
   if (!session) {
     console.log('Initializing anonymous session...');
@@ -136,8 +150,9 @@ const onSubmit = async (e) => {
 
      // If an anonymous user sends a message, increment the message count
      if (!session) {
-      let messageCount = parseInt(localStorage.getItem('messageCount'), 10); // Corrected radix parameter
-      localStorage.setItem('messageCount', (messageCount + 1).toString());
+      let messageCount = parseInt(session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount'), 10); // Corrected radix parameter
+      const key = session ? 'userMessageCount' : 'anonymousMessageCount';
+      localStorage.setItem(key, (messageCount + 1).toString());
      }
   
     // Update state
@@ -215,7 +230,21 @@ const onSubmit = async (e) => {
     }
   }
 
-  useEffect(() => {
+  
+useEffect(() => {
+  if (session) {
+    // Reset user message count
+    localStorage.setItem('userMessageCount', '0');
+    setRemainingMessages(5);
+  } else {
+    // Handle anonymous user logic
+    console.log('Initializing anonymous session...');
+    initializeAnonymousSession();
+    checkMessageCount();
+  }
+}, [session]);
+
+useEffect(() => {
     setCharacterAvatar(`/characterAvatars/${mode}.png`);
   }, [mode]);
 
