@@ -9,6 +9,28 @@ import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient'; // Make sure to import your initialized Supabase client
 import { v4 as uuidv4 } from 'uuid';
 
+async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse) {
+  const currentTime = new Date().toISOString();
+  // Use a generated UUID for anonymous users
+  const anonymousUserId = uuidv4();
+  const chatHistory = {
+    user_id: userId === 'anonymous' ? anonymousUserId : userId,
+    conversation_id: conversationId,
+    text: JSON.stringify({ userMessage, chatGptResponse }),
+    created_at: currentTime
+  };
+
+  const { data, error } = await supabase
+    .from('OdysseyInteractions')
+    .insert([chatHistory]);
+
+  if (error) {
+    console.error('Error uploading chat history:', error);
+    return;
+  }
+  console.log('Chat history uploaded successfully:', data);
+}
+
 
 
 
@@ -145,6 +167,14 @@ const onSubmit = async (e) => {
         throw data.error || new Error(`Request failed with status ${response.status}`);
       }
 
+
+          // After receiving ChatGPT response
+          const chatGptResponse = data.result.trim();
+          // Call uploadChatHistory here
+          const userId = session ? session.user.id : 'anonymous'; // Example logic for userId
+          const conversationId = uuidv4(); // Generate or use a conversation ID
+          await uploadChatHistory(userId, conversationId, promptInput, chatGptResponse);
+
       setResult(
         (prevResult) =>
           `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nChatGPT: ${
@@ -157,7 +187,7 @@ const onSubmit = async (e) => {
      
 
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
-      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-GB-News-H" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
+      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "de-DE-Neural2-F" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
       console.log(`Voice parameter being sent to backend: ${voiceParam}`);
       const audioResponse = await fetch(ttsEndpoint, {
@@ -206,6 +236,9 @@ const onSubmit = async (e) => {
       </Head>
       <main className={styles.main}>
         <h3>Mind Forge by ExoFi Labs</h3>
+
+      
+   
 
        {/* Conditional rendering based on session */}
        {!session ? (
