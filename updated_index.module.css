@@ -32,9 +32,9 @@
 .main form {
   display: flex;
   flex-direction: column;
-  width: flex;
+  width: 100%;
   background-color: rgba(17, 17, 19, 0.9);
-  padding: 20px;
+  padding: 0px;
   border-radius: 10px;
 }
 
@@ -152,4 +152,26 @@
 .linksContainer {
   margin-top: 5px; /* Example style */
   text-align: center; /* Example style */
+}
+
+/* Ensuring padding and border are included in the element's width and height */
+* {
+    box-sizing: border-box;
+}
+
+/* Media Queries for Responsive Design */
+@media screen and (max-width: 768px) {
+    .main {
+        width: 100%; /* Adjusting width for smaller screens */
+        padding: 10px; /* Adjust padding as needed */
+        margin: 0 auto; /* Centering the main container */
+    }
+
+    /* Other responsive adjustments as needed */
+}
+
+/* Example of setting max-width */
+.main {
+    max-width: 1200px; /* Adjust as needed */
+    margin: 0 auto; /* Centering the main container */
 }
