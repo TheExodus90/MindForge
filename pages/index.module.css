@@ -97,7 +97,9 @@
   width: 100%;
   max-width: 80%; /* Responsive max-width */
   height: 220px;
+  color: #d8d8d8; /* Light color for text */
 }
+
 
 /* Avatar container styles */
 .main .avatar-container {
