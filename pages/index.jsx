@@ -243,15 +243,9 @@ const onSubmit = async (e) => {
   
 useEffect(() => {
   if (session) {
-    // Reset user message count
     localStorage.setItem('userMessageCount', '0');
-    setRemainingMessages(5);
-  } else {
-    // Handle anonymous user logic
-    console.log('Initializing anonymous session...');
-    initializeAnonymousSession();
-    checkMessageCount();
   }
+  updateRemainingMessages();
 }, [session]);
 
 useEffect(() => {
