@@ -273,8 +273,8 @@ useEffect(() => {
        {!session ? (
           <div>
           <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>Log In </a>
-                  <span>  </span> {/* Add a separator */}
-          <a href="#" onClick={() => router.push('/usersignup')} className={styles.customButton}>Sign Up</a>
+                  
+          <a href="#" onClick={() => router.push('/usersignup')} className={styles.customButton}>Sign-Up</a>
                   <span>  </span> {/* Add a separator */}
           
 
