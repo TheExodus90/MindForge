@@ -272,14 +272,8 @@ useEffect(() => {
        {/* Conditional rendering based on session */}
        {!session ? (
           <div>
-          <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>Log In </a>
-                  
+          <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>Log In </a>   
           <a href="#" onClick={() => router.push('/usersignup')} className={styles.customButton}>Sign-Up</a>
-                  <span>  </span> {/* Add a separator */}
-          
-
-
-
 
               </div>
         ) : (
