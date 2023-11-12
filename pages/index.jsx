@@ -52,7 +52,6 @@ export default function Home() {
   const { session, signOut } = useAuth();
   const [remainingMessages, setRemainingMessages] = useState(5);
   const [userMessage, setUserMessage] = useState("");
-  
 
 
   
@@ -213,7 +212,7 @@ const onSubmit = async (e) => {
      
 
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
-      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-GB-News-H" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
+      const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "de-DE-Neural2-F" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
       console.log(`Voice parameter being sent to backend: ${voiceParam}`);
       const audioResponse = await fetch(ttsEndpoint, {
@@ -242,12 +241,18 @@ const onSubmit = async (e) => {
   }
 
   
-  useEffect(() => {
-    if (session) {
-      localStorage.setItem('userMessageCount', '0');
-    }
-    updateRemainingMessages();
-  }, [session]);
+useEffect(() => {
+  if (session) {
+    // Reset user message count
+    localStorage.setItem('userMessageCount', '0');
+    setRemainingMessages(5);
+  } else {
+    // Handle anonymous user logic
+    console.log('Initializing anonymous session...');
+    initializeAnonymousSession();
+    checkMessageCount();
+  }
+}, [session]);
 
 useEffect(() => {
     setCharacterAvatar(`/characterAvatars/${mode}.png`);
