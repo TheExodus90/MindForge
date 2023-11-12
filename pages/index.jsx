@@ -241,12 +241,12 @@ const onSubmit = async (e) => {
   }
 
   
-useEffect(() => {
-  if (session) {
-    localStorage.setItem('userMessageCount', '0');
-  }
-  updateRemainingMessages();
-}, [session]);
+  useEffect(() => {
+    if (session) {
+      localStorage.setItem('userMessageCount', '0');
+    }
+    updateRemainingMessages();
+  }, [session]);
 
 useEffect(() => {
     setCharacterAvatar(`/characterAvatars/${mode}.png`);
