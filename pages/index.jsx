@@ -55,16 +55,17 @@ export default function Home() {
 
 
   
-// Function to check or initialize anonymous session
-const initializeAnonymousSession = () => {
-  let session = localStorage.getItem('anonymousSession');
-  if (!session) {
-    session = uuidv4(); // Generate a unique session ID
-    localStorage.setItem('anonymousSession', session);
-    localStorage.setItem('anonymousMessageCount', '0');
-  }
-  updateRemainingMessages(); // Update remaining messages based on the new or existing session
-};
+  const initializeAnonymousSession = () => {
+    let session = localStorage.getItem('anonymousSession');
+    if (!session) {
+      session = uuidv4(); // Generate a unique session ID
+      localStorage.setItem('anonymousSession', session);
+      localStorage.setItem('anonymousMessageCount', '0');
+      // Initialize message count here
+      localStorage.setItem('anonymousMessageCount', '0');
+    }
+    updateRemainingMessages(); // Update remaining messages based on the new or existing session
+  };
 
 const updateRemainingMessages = () => {
   let messageCount;
