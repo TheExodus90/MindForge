@@ -44,7 +44,8 @@ function ForgotPasswordPage() {
                     <input type="submit" value="Send Reset Email" />
                 </form>
                 <div>
-                    <a href="#" onClick={() => router.push('/login')}>Back to Login</a>
+                    <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>Login </a>
+                    <a href="#" onClick={() => router.push('/')} className={styles.customButton}>Home </a>
                 </div>
             </div>
         </div>
