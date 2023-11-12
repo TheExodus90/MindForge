@@ -25,7 +25,7 @@ function SignUpPage() {
             setErrorMessage(error.message || 'Sign up failed.');
         } else {
             setNotification(`Registration successful! Please check your email to verify your account. You may then proceed to <a href="/login" style="color: blue;">Login</a>.`);
-            console.log('Registration successful!', data);
+            
         }
     };
 
@@ -68,7 +68,8 @@ function SignUpPage() {
                 <button type="submit" disabled={!acceptedTerms}>Sign Up</button>
             </form>
             <div>
-                <a href="#" onClick={() => router.push('/login')}>Already have an account? Login</a>
+                <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>Login </a>
+                <a href="#" onClick={() => router.push('/')} className={styles.customButton}>Home</a>
             </div>
 
             {showTerms && (

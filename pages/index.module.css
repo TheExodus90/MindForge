@@ -163,3 +163,37 @@
     font-size: 24px;
   }
 }
+
+
+.login-container {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form {
+  margin-top: 20px;
+}
+
+.redText {
+  color: red;
+}
+
+/* Define a custom class for the signup/login buttons */
+.customButton {
+  background-color: #043d27; /* Change the background color to your desired color */
+  color: #fff; /* Change the text color to white or a suitable color */
+  border: none; /* Remove the default border */
+  padding: 5px 5px; /* Adjust padding as needed */
+  border-radius: 5px; /* Add rounded corners if desired */
+  cursor: pointer; /* Add a pointer cursor on hover */
+  text-decoration: none; /* Remove underline */
+}
+
+/* Define styles for the button on hover or focus */
+.customButton:hover,
+.customButton:focus {
+  background-color: #e64900; /* Change the background color on hover/focus */
+  /* Add other styles as desired */
+}

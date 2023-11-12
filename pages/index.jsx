@@ -28,7 +28,6 @@ async function uploadChatHistory(userId, conversationId, userMessage, chatGptRes
     console.error('Error uploading chat history:', error);
     return;
   }
-  console.log('Chat history uploaded successfully:', data);
 }
 
 
@@ -85,9 +84,7 @@ const updateRemainingMessages = () => {
 const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
   const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
-  console.log('Stored messageCount from localStorage:', storedMessageCount); // Debugging line
   let messageCount = parseInt(storedMessageCount, 10);
-  console.log('Parsed messageCount:', messageCount); // Debugging line
   let remaining = 5 - messageCount;
   setRemainingMessages(remaining);
   if (messageCount >= 5 || remaining < 0) {
@@ -110,7 +107,6 @@ useEffect(() => {
     setRemainingMessages(5);
   } else {
     // Handle anonymous user logic
-    console.log('Initializing anonymous session...');
     initializeAnonymousSession();
     checkMessageCount();
   }
@@ -118,11 +114,8 @@ useEffect(() => {
 
 useEffect(() => {
   if (!session) {
-    console.log('Initializing anonymous session...');
     initializeAnonymousSession();
     const messageCheckPassed = checkMessageCount();
-    console.log(`Message check passed: ${messageCheckPassed}`);
-    console.log(`Remaining messages: ${remainingMessages}`);
   }
 }, [session]); // Depend on session state
 
@@ -143,7 +136,6 @@ async function insertInteraction(userId, conversationId, text) {
         return false;
     }
 
-    console.log('Interaction inserted:', data);
     return true;
 }
 const onSubmit = async (e) => {
@@ -175,9 +167,7 @@ const onSubmit = async (e) => {
     // Update state
     setTotalTokens(newTotalTokens);
     setMessageHistory(newMessageHistory);
-    
-    console.log(`Total tokens used: ${newTotalTokens}`);
-    
+       
     e.preventDefault();
     setIsLoading(true); 
 
@@ -221,7 +211,6 @@ const onSubmit = async (e) => {
       const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
       const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-GB-News-H" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
 
-      console.log(`Voice parameter being sent to backend: ${voiceParam}`);
       const audioResponse = await fetch(ttsEndpoint, {
         method: "POST",
         headers: {
@@ -282,11 +271,17 @@ useEffect(() => {
 
        {/* Conditional rendering based on session */}
        {!session ? (
-          <div className={styles.linksContainer}>
-            <Link href="/login">Login |</Link> 
-            <Link href="/usersignup"> Sign Up </Link>
-            
-          </div>
+          <div>
+          <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>login </a>
+                  <span>  </span> {/* Add a separator */}
+          <a href="#" onClick={() => router.push('/usersignup')} className={styles.customButton}>Sign Up</a>
+                  <span>  </span> {/* Add a separator */}
+          
+
+
+
+
+              </div>
         ) : (
           <div className={styles.welcomeLogoutContainer}>
             <span>Welcome, {session.user.email}!</span> {/* Display the user's email or name */}
@@ -298,14 +293,16 @@ useEffect(() => {
 
         
 
-      <div>
-  {!session && (
-    <div>
+<div>
+  {remainingMessages <= 0 ? (
+    <span className={`${styles.redText}`}>
       You have {remainingMessages} free messages remaining. Sign up for a free account to increase usage limits.
-    </div>
+    </span>
+  ) : (
+    <span>
+      You have {remainingMessages} free messages remaining. Sign up for a free account to increase usage limits.
+    </span>
   )}
-
-
 </div>
   
       
@@ -317,7 +314,6 @@ useEffect(() => {
             value={promptInput}
             onChange={(e) => {
               setPromptInput(e.target.value);
-              console.log(promptInput);
             }}
             placeholder="Send a message"
           />

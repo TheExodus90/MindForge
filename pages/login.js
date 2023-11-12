@@ -64,10 +64,18 @@ function LoginPage() {
                     <input type="submit" value="Login" />
                 </form>
                 <div>
-                    <a href="#" onClick={() => router.push('/forgotpassword')}>Forgot Password?</a>
-                </div>
-            </div>
-        </div>
+                <a href="#" onClick={() => router.push('/forgotpassword')} className={styles.customButton}>Forgot Password? </a>
+                        <span>  </span> {/* Add a separator */}
+                <a href="#" onClick={() => router.push('/usersignup')} className={styles.customButton}>Sign Up</a>
+                        <span>  </span> {/* Add a separator */}
+                <a href="#" onClick={() => router.push('/')} className={styles.customButton}>Home</a>
+
+
+
+
+                    </div>
+                     </div>
+                     </div>
     );
 }
 
