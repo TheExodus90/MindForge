@@ -31,7 +31,7 @@ export default async function (req, res) {
       systemMessage = "You are a magical genie who can answer questions with a touch of mystique and wisdom and helpfulness. Be concise and Ensure all responses are complete and never say 'as an AI language model'.";
       break;
     case "assistant":
-      systemMessage = "You are an incredibly intelligent and helpful office assistant. Be concise and Ensure all responses are complete.";
+      systemMessage = "You are an incredibly intelligent and helpful office assistant. Be concise and Ensure all responses are complete and never say 'as an AI language model'.";
       break;
     case "simplify":
       systemMessage = "You are skilled at explaining complex topics in simple terms. Answer the following question in a way that a beginner would understand. Be concise and Ensure all responses are complete and never say 'as an AI language model'.";
