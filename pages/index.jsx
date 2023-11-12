@@ -52,6 +52,7 @@ export default function Home() {
   const { session, signOut } = useAuth();
   const [remainingMessages, setRemainingMessages] = useState(5);
   const [userMessage, setUserMessage] = useState("");
+  
 
 
   
