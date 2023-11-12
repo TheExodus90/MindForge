@@ -294,7 +294,7 @@ useEffect(() => {
     </span>
   ) : (
     <span>
-      You have {remainingMessages} free messages remaining. Sign up for a free account to increase usage limits.
+      {/* You have {remainingMessages} free messages remaining. Please upgrade to increase usage limits. */}
     </span>
   )}
 </div>
