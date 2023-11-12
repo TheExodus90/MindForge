@@ -67,9 +67,15 @@ const initializeAnonymousSession = () => {
 };
 
 const updateRemainingMessages = () => {
-  const messageCount = session 
-    ? parseInt(localStorage.getItem('userMessageCount') || '0', 10)
-    : parseInt(localStorage.getItem('anonymousMessageCount') || '0', 10);
+  let messageCount;
+  if (session) {
+    messageCount = parseInt(localStorage.getItem('userMessageCount') || '0', 10);
+  } else {
+    messageCount = parseInt(localStorage.getItem('anonymousMessageCount') || '0', 10);
+  }
+  if (isNaN(messageCount)) {
+    messageCount = 0; // Default to 0 if parsing failed
+  }
   setRemainingMessages(5 - messageCount);
 };
 
@@ -160,9 +166,9 @@ const onSubmit = async (e) => {
      // If an anonymous user sends a message, increment the message count
      if (!session) {
       const key = 'anonymousMessageCount';
-      let messageCount = parseInt(localStorage.getItem(key), 10);
+      let messageCount = parseInt(localStorage.getItem(key) || '0', 10);
       localStorage.setItem(key, (messageCount + 1).toString());
-      updateRemainingMessages(); // Update the remaining messages state
+      updateRemainingMessages(); // Make sure this is called right after updating localStorage
     }
   
     // Update state
