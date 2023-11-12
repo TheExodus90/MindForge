@@ -81,6 +81,9 @@
   text-align: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  max-width: 60%;
+  min-width: 40%;
+  margin: 0 auto; /* Center-align the button horizontally */
 }
 
 /* Hover effect on submit button */

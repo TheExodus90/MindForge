@@ -88,7 +88,7 @@ const checkMessageCount = () => {
   let remaining = 5 - messageCount;
   setRemainingMessages(remaining);
   if (messageCount >= 5 || remaining < 0) {
-    setUserMessage("You have reached the free usage limit, please sign up for a free account to increase your usage limit ");
+    setUserMessage("You have reached the free usage limit, please log-in or sign up for a free account to increase your usage limit ");
     return false;
   }
   return true;
@@ -311,6 +311,15 @@ useEffect(() => {
             }}
             placeholder="Send a message"
           />
+
+          <input
+          type="submit"
+          className={remainingMessages <= 0 }
+          value={isLoading ? "Loading..." : "Generate Response"}
+          disabled={isLoading || remainingMessages <= 0}
+          />
+
+
           <div>
             <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Female Voice
             <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
@@ -443,13 +452,6 @@ useEffect(() => {
   </div>
 {/* ... */}
 
-
-<input
-  type="submit"
-  className={remainingMessages <= 0 ? styles.buttonDisabled : ""}
-  value={isLoading ? "Loading..." : "Generate Response"}
-  disabled={isLoading || remainingMessages <= 0}
-/>
 
 </form>
 <textarea
