@@ -261,6 +261,17 @@ useEffect(() => {
     <div className={styles.body} style={{ minHeight: "100vh" }}>
       <Head>
         <title>ExoFi Labs</title>
+        <meta name="description" content="MindForge, created by ExoFi Labs." />
+        <meta name="keywords" content="ExoFi Labs, AI, Technology, Innovation, TTS, text to speech, chatbot, RPG, AI Companion" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta property="og:title" content="MindForge by ExoFi Labs" />
+        <meta property="og:image" content="public\imageresources\exogreen.png" />
+        <meta property="og:url" content="https://www.exofi.app" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="ExoFi Labs" />
+        <meta name="twitter:description" content="Explore AI innovations at ExoFi Labs." />
+        <meta name="twitter:image" content="public\imageresources\logo-black.png" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
