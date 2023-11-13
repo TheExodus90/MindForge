@@ -65,8 +65,8 @@
       const response = await openai.createChatCompletion({
         model: "gpt-3.5-turbo-16k",
         messages: messageHistory,
-        temperature: 0.8,
-        max_tokens: 200,
+        temperature: 0.75,
+        max_tokens: 600,
       });
 
       const assistantMessage = response.data.choices[0].message.content;
