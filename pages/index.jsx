@@ -305,7 +305,7 @@ useEffect(() => {
     </span>
   ) : (
     <span>
-      /* You have {remainingMessages} free messages remaining. Please upgrade to increase usage limits. */
+      You have {remainingMessages} free messages remaining. Please upgrade to increase usage limits. 
     </span>
   )}
 </div>
@@ -323,12 +323,12 @@ useEffect(() => {
             placeholder="Send a message"
           />
 
-          <input
-          type="submit"
-          className={remainingMessages <= 0 }
-          value={isLoading ? "Loading..." : "Generate Response"}
-          disabled={isLoading || remainingMessages <= 0}
-          />
+              <input
+              type="submit"
+              className={remainingMessages <= 0 ? styles.redText : undefined}
+              value={isLoading ? "Loading..." : "Generate Response"}
+              disabled={isLoading || remainingMessages <= 0}
+/>
 
 
           <div>
