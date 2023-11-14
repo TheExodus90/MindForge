@@ -39,6 +39,7 @@
 
 /* Form styling */
 .main form {
+  justify-content: center;
   display: flex;
   flex-direction: column;
   width: auto;
@@ -47,6 +48,7 @@
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
+  
 }
 
 /* Text input styling */
@@ -90,6 +92,36 @@
 .main input[type="submit"]:hover {
   background-color: #10a37f;
 }
+
+
+.resetButton {
+  padding: 12px 0;
+  background-color: #ff4d4d; /* Red background color */
+  color: #fff; /* White text color */
+  border: none; /* No border */
+  padding: 10px 20px; /* Padding similar to the submit button */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease; /* Smooth background color transition */
+  margin-left: 0px; /* Spacing between this button and the submit button */
+  max-width: 15%;
+  min-width: 5%;
+  margin: 0 auto; /* Center-align the button horizontally */
+
+}
+
+.resetButton:hover {
+  background-color: #e60000; /* Darker red on hover */
+}
+
+/* New container for buttons */
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50 px; /* This adds space between your buttons */
+}
+
 
 /* Result box styling */
 .main .result {
@@ -200,4 +232,13 @@
 .customButton:focus {
   background-color: #e64900; /* Change the background color on hover/focus */
   /* Add other styles as desired */
+}
+
+.modelSettings {
+ 
+  justify-content: center;
+  align-items: center;
+  
+
+
 }

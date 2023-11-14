@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "./index.module.css";
 import "isomorphic-fetch";
 import { Analytics } from '@vercel/analytics/react';
@@ -51,6 +51,7 @@ export default function Home() {
   const { session, signOut } = useAuth();
   const [remainingMessages, setRemainingMessages] = useState(5);
   const [userMessage, setUserMessage] = useState("");
+  const prevModeRef = useRef(mode);
 
 
   
@@ -95,6 +96,21 @@ const checkMessageCount = () => {
 };
 
 
+// Add a new function to reset the chat
+const resetChat = () => {
+  setMessageHistory([]); // Clears the conversation history
+  setResult(''); // Clears the displayed results
+  setTotalTokens(0); // Resets the token count
+  setPromptInput(''); // Clears the prompt input
+  // Add any additional state resets here as needed
+};
+
+useEffect(() => {
+  if (prevModeRef.current !== mode) {
+    resetChat();
+  }
+  prevModeRef.current = mode; // Update the ref to the current mode
+}, [mode]); // Re-run the effect if 'mode' changes
 
 
 
@@ -138,9 +154,11 @@ async function insertInteraction(userId, conversationId, text) {
 
     return true;
 }
-const onSubmit = async (e) => {
+const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDefault === 'function'){
   e.preventDefault();
   setIsLoading(true);
+
+
 
   if (!session && !checkMessageCount()) {
     return; // Early return if message limit is reached
@@ -234,7 +252,9 @@ const onSubmit = async (e) => {
     } finally {
       setIsLoading(false); 
     }
-  }
+  }}
+
+  
 
   
   useEffect(() => {
@@ -262,15 +282,15 @@ useEffect(() => {
       <Head>
         <title>ExoFi Labs</title>
         <meta name="description" content="MindForge, created by ExoFi Labs." />
-        <meta name="keywords" content="ExoFi Labs, AI, Technology, Innovation, TTS, text to speech, chatbot, RPG, AI Companion" />
+        <meta name="keywords" content="ExoFi Labs, Mindforge, AI, Technology, TTS, text to speech, MindForge by ExoFi Labs, chatbot, RPG, AI Companion" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta property="og:title" content="MindForge by ExoFi Labs" />
-        <meta property="og:image" content="public\imageresources\exogreen.png" />
+        <meta property="og:image" content="public\imageresources\MindForgeLogo.png" />
         <meta property="og:url" content="https://www.exofi.app" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="ExoFi Labs" />
-        <meta name="twitter:description" content="Explore AI innovations at ExoFi Labs." />
+        <meta name="twitter:description" content="The Utlimate AI Experience, MindForge by ExoFi Labs" />
         <meta name="twitter:image" content="public\imageresources\logo-black.png" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -313,24 +333,37 @@ useEffect(() => {
       
         
         <form onSubmit={onSubmit}>
-          <input
-            type="text"
-            name="prompt"
-            value={promptInput}
-            onChange={(e) => {
-              setPromptInput(e.target.value);
-            }}
-            placeholder="Send a message"
-          />
+        <input
+  type="text"
+  name="prompt"
+  value={promptInput} // This is where the input value should be bound
+  onChange={(e) => setPromptInput(e.target.value)}
+  onKeyPress={(e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      onSubmit(e); // Call the onSubmit function directly
+    }
+  }}
+  placeholder="Send a message"
+/>
 
+            <div className={styles.buttonContainer}>
               <input
               type="submit"
               className={remainingMessages <= 0 ? styles.redText : undefined}
               value={isLoading ? "Loading..." : "Generate Response"}
               disabled={isLoading || remainingMessages <= 0}
-/>
+            /> 
+            </div>
+            
 
+            <div className={styles.buttonContainer}>
+            <button type="button"
+            className={styles.resetButton} /* new class for reset button */
+           onClick={resetChat} >Reset</button>
 
+          </div>
+
+            <div className={styles.modelSettings}>
           <div>
             <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Female Voice
             <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
@@ -363,7 +396,10 @@ useEffect(() => {
         </div>
         </div>
         
-        <label htmlFor="mode">Select an AI to Chat with: </label>
+        <label htmlFor="mode">Select an AI to Chat with : </label>
+
+
+        </div>
 
 <div className={styles.characterAvatarContainer}>
 <label htmlFor="characterGenie">
