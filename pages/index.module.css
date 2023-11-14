@@ -385,4 +385,17 @@
 .userMessageStyle
 {
   color: #247033;
+  justify-content: center;
+  align-items: center;
+  max-width: 40%;
+  font-size: large;
+  font-weight: 450;
+}
+
+.bodyText
+{
+  color: #247033;
+  justify-content: center;
+  align-items: center;
+  max-width: 40%;
 }

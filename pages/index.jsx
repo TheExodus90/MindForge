@@ -347,6 +347,7 @@ useEffect(() => {
   )}
 </div>
 
+<div className={styles.bodyText}> Welcome to MindForge by ExoFi Labs, a cutting-edge digital platform powered by ChatGPT, designed to revolutionize your online interactions. Our platform seamlessly integrates advanced AI communication with rapid voice synthesis capabilities from 11Labs and Google TTS, ensuring a dynamic and responsive user experience. Please select an AI Personality to chat with below.</div>
       
       
   
