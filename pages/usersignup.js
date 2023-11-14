@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from "./index.module.css"; 
 import { supabase } from '../config/supabaseClient';
-import TermsOfService from '/terms'; // Import the TermsOfService component
+import TermsOfService from './terms'; // Import the TermsOfService component
 import validator from 'validator';
 
 
@@ -32,7 +32,7 @@ function SignUpPage() {
         password: password,
     });
 
-
+    
         if (error) {
             setErrorMessage(error.message || 'Sign up failed.');
         } else {
