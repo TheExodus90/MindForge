@@ -52,6 +52,10 @@ export default function Home() {
   const [remainingMessages, setRemainingMessages] = useState(5);
   const [userMessage, setUserMessage] = useState("");
   const prevModeRef = useRef(mode);
+  const [isNightMode, setIsNightMode] = useState(true); // new state for night mode
+  const toggleNightMode = () => {
+    setIsNightMode(!isNightMode);
+  };
 
 
   
@@ -278,7 +282,20 @@ useEffect(() => {
   };
 
   return (
-    <div className={styles.body} style={{ minHeight: "100vh" }}>
+    <div className={isNightMode ? styles.nightMode : styles.dayMode}> {/* Toggle class based on state */}
+    
+    <div className={styles.nightModeToggle}>
+          <span onClick={toggleNightMode}>
+            {isNightMode ? (
+              <span>🌙</span> // Moon symbol for night mode
+            ) : (
+              <span>☀️</span> // Sun symbol for day mode
+            )}
+             </span>
+           </div>
+
+    
+    
       <Head>
         <title>ExoFi Labs</title>
         <meta name="description" content="MindForge, created by ExoFi Labs." />
@@ -328,7 +345,10 @@ useEffect(() => {
       You have {remainingMessages} free messages remaining. Please upgrade to increase usage limits. 
     </span>
   )}
-</div>
+  </div>
+
+      
+      
   
       
         
@@ -343,8 +363,7 @@ useEffect(() => {
       onSubmit(e); // Call the onSubmit function directly
     }
   }}
-  placeholder="Send a message"
-/>
+  placeholder="Send a message"/>
 
             <div className={styles.buttonContainer}>
               <input
@@ -354,6 +373,8 @@ useEffect(() => {
               disabled={isLoading || remainingMessages <= 0}
             /> 
             </div>
+
+            
             
 
             <div className={styles.buttonContainer}>
@@ -363,7 +384,13 @@ useEffect(() => {
 
           </div>
 
+          
+
             <div className={styles.modelSettings}>
+
+            
+
+           
           <div>
             <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Female Voice
             <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
@@ -395,6 +422,11 @@ useEffect(() => {
           
         </div>
         </div>
+
+        
+
+        
+
         
         <label htmlFor="mode">Select an AI to Chat with : </label>
 

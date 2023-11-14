@@ -8,6 +8,127 @@
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
 }
 
+/* Night Mode styles */
+.nightMode {
+  font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #232323, #0e0e0e, #0a3b09);
+  background-size: 400% 400%;
+  animation: gradient 10s ease infinite;
+  color: #d8d8d8;
+  line-height: 24px;
+  /* ... [other night mode specific styles] */
+}
+
+/* Day Mode styles */
+.dayMode {
+  font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(135deg, #73af6b, #8cccac, #56aa79); /* Lighter gradient for day mode */
+  color: #1d1818; /* Darker text color for better readability */
+  line-height: 24px;
+  animation: gradient 10s ease infinite;
+  color: #d8d8d8;
+  line-height: 24px;
+  /* ... [other day mode specific styles, lighter versions of night mode styles] */
+
+  .main form {
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    width: auto;
+    max-width: 80%; /* Responsive max-width */
+    background-color: rgba(41, 87, 41, 0.35);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;  
+  }
+
+  /* Styling for headings */
+.main h3 {
+  font-size: 32px;
+  line-height: 40px;
+  font-weight: 600; /* Using weight from imported font */
+  margin: 16px 0 10px;
+  text-transform: uppercase;
+  color: #247033;
+}
+
+.welcomeLogoutContainer
+{color: #2c853e;
+}
+
+/* Result box styling */
+.main .result {
+  font-weight: bold;
+  margin-top: 40px;
+  background-color: rgba(181, 201, 190, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 80%; /* Responsive max-width */
+  height: 220px;
+  color: #3f3c3c; /* Light color for text */
+}
+
+/* Text input styling */
+.main input[type="text"] {
+  padding: 12px 16px;
+  border: 1px solid #0f8e6c;
+  border-radius: 4px;
+  margin-bottom: 24px;
+  outline-color: #0f8e6c;
+  background-color: rgba(181, 201, 190, 0.9);
+  color: #247033;
+  transition: all 0.3s ease;
+}
+
+
+}
+
+
+/* Styling for the Night Mode Toggle Switch */
+.nightModeToggle {
+  position: fixed; /* Fixed position */
+  top: 10px; /* Distance from top */
+  left: 10px; /* Distance from left */
+  margin-top: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  cursor: pointer;
+}
+
+.nightModeToggle span {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 20px;
+  background-color: #f0f0f0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s;
+}
+
+.nightModeToggle span:hover {
+  background-color: #e0e0e0;
+}
+
+.nightModeToggle label {
+  margin-right: 10px;
+  color: inherit; /* Inherits color from night or day mode */
+}
+
+.nightModeToggle input[type="checkbox"] {
+  width: 20px; /* Adjust size as needed */
+  height: 20px; /* Adjust size as needed */
+  cursor: pointer;
+}
+
+
+/* Base class for applying reset styles */
+.base {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
+}
+
 /* Body styles for background and font */
 .body {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
@@ -34,7 +155,7 @@
   font-weight: 600; /* Using weight from imported font */
   margin: 16px 0 10px;
   text-transform: uppercase;
-  color: #d8d8d8;
+  color: #746f6f;
 }
 
 /* Form styling */
@@ -183,6 +304,21 @@
   }
 }
 
+/* Keyframes for day mode gradient animation */
+@keyframes gradientDay {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+
 /* Links container for additional styling */
 .linksContainer {
   margin-top: 5px;
@@ -240,3 +376,4 @@
   align-items: center;
   
 }
+

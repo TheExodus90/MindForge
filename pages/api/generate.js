@@ -66,7 +66,7 @@
         model: "gpt-3.5-turbo-16k",
         messages: messageHistory,
         temperature: 0.75,
-        max_tokens: 600,
+        max_tokens: 550,
       });
 
       const assistantMessage = response.data.choices[0].message.content;
