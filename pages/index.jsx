@@ -335,17 +335,17 @@ useEffect(() => {
 
         
 
-<div>
+<div>  
   {remainingMessages <= 0 ? (
-    <span className={`${styles.redText}`}>
+    <span className={styles.redText}>
       You have {remainingMessages} free messages remaining. Sign up for a free account to increase usage limits.
     </span>
   ) : (
-    <span>
+    <span className={styles.userMessageStyle}>
       You have {remainingMessages} free messages remaining. Please upgrade to increase usage limits. 
     </span>
   )}
-  </div>
+</div>
 
       
       

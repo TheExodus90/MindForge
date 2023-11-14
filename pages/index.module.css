@@ -81,6 +81,11 @@
   transition: all 0.3s ease;
 }
 
+.userMessageStyle
+{
+  color: #247033;
+}
+
 
 }
 
@@ -377,3 +382,7 @@
   
 }
 
+.userMessageStyle
+{
+  color: #247033;
+}
