@@ -8,6 +8,8 @@ import { useAuth } from '../context/authContext';
 import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient'; // Make sure to import your initialized Supabase client
 import { v4 as uuidv4 } from 'uuid';
+import Footer from '../components/Footer';
+
 
 async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse) {
   const currentTime = new Date().toISOString();
@@ -375,7 +377,7 @@ useEffect(() => {
             /> 
             </div>
 
-            
+                       
             
 
             <div className={styles.buttonContainer}>
@@ -547,7 +549,12 @@ useEffect(() => {
 
 </main>
 
+
+<Footer />
+
 </div>
+
+
 
   );
 }

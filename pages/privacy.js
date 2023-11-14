@@ -1,8 +1,9 @@
 import React from 'react';
+import styles from 'pages/index.module.css';
 
 const PrivacyPolicy = () => {
   return (
-    <div>
+    <div className={styles.body}>
       <h1>Privacy Policy</h1>
       <h2>1. Information We Collect</h2>
       <p>

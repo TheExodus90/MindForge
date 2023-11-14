@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css"; 
 import { supabase } from '../config/supabaseClient';
 import TermsOfService from './api/terms'; // Import the TermsOfService component
+import validator from 'validator';
+
 
 function SignUpPage() {
     const [email, setEmail] = useState('');
@@ -12,15 +14,25 @@ function SignUpPage() {
     const [showTerms, setShowTerms] = useState(false); // State to control the terms modal visibility
     const router = useRouter();
     const [notification, setNotification] = useState('');
+    
 
     const handleSignUp = async (e) => {
         e.preventDefault();
 
-        const { data, error } = await supabase.auth.signUp({
-            email: email,
-            password: password,
-        });
+        // Validate the email address
+    if (!validator.isEmail(email)) {
+        setErrorMessage('Please enter a valid email address.');
+        return; // Stop the function if the email is invalid
+    }
 
+
+    // Proceed with signup if the email is valid
+    const { data, error } = await supabase.auth.signUp({
+        email: email,
+        password: password,
+    });
+
+    
         if (error) {
             setErrorMessage(error.message || 'Sign up failed.');
         } else {

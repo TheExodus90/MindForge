@@ -142,6 +142,10 @@
   animation: gradient 10s ease infinite;
   color: #d8d8d8;
   line-height: 24px;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 /* Main container styling */
@@ -202,7 +206,7 @@
 
 /* Submit button styling */
 .main input[type="submit"] {
-  padding: 12px 0;
+  padding: 12px;
   color: #fff;
   background-color: #0f8e6c;
   border: none;
@@ -233,7 +237,7 @@
   margin-left: 0px; /* Spacing between this button and the submit button */
   max-width: 15%;
   min-width: 5%;
-  margin: 0 auto; /* Center-align the button horizontally */
+  margin: 2px auto; /* Center-align the button horizontally */
 
 }
 
@@ -247,6 +251,8 @@
   justify-content: center;
   align-items: center;
   gap: 50 px; /* This adds space between your buttons */
+  margin: 2px;
+
 }
 
 
@@ -398,4 +404,43 @@
   justify-content: center;
   align-items: center;
   max-width: 40%;
+}
+
+.footer {
+  background-color: #f8f8f8; /* Example background color */
+  padding: 20px;
+  text-align: center;
+  
+}
+
+.footerContent {
+  max-width: 1200px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footerLink {
+  color: #333; /* Link color */
+  text-decoration: none;
+}
+
+.footerLink:hover {
+  text-decoration: underline;
+}
+
+.footer {
+  background-color: transparent; /* Ensure footer background is transparent */
+}
+
+.links {
+  display: flex;
+  gap: 20px; /* Space between links */
+}
+
+
+
+.copyRight {
+  color: #666; /* Example color */
 }

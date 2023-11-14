@@ -1,8 +1,9 @@
 import React from 'react';
+import styles from "./index.module.css";
 
 const TermsOfService = () => {
   return (
-    <div>
+    <div className={styles.body}>
       <h1>Terms of Service</h1>
       <h2>1. Acceptance of Terms</h2>
       <p>
