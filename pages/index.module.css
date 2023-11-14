@@ -369,7 +369,7 @@
   background-color: #043d27; /* Change the background color to your desired color */
   color: #fff; /* Change the text color to white or a suitable color */
   border: none; /* Remove the default border */
-  padding: 5px 5px; /* Adjust padding as needed */
+  padding: 5px; /* Adjust padding as needed */
   border-radius: 5px; /* Add rounded corners if desired */
   cursor: pointer; /* Add a pointer cursor on hover */
   text-decoration: none; /* Remove underline */
@@ -403,7 +403,7 @@
   color: #247033;
   justify-content: center;
   align-items: center;
-  max-width: 40%;
+  max-width: 80%;
 }
 
 .footer {

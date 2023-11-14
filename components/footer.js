@@ -14,7 +14,7 @@ function Footer() {
                     </Link>
                 </div>
                 <div className={styles.copyRight}>
-                    <p>© {new Date().getFullYear()} ExoFi Labs. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} ExoFi Labs. Made with ♥ by ExoFi. All rights reserved.</p>
                 </div>
             </div>
         </footer>
