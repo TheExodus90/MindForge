@@ -102,6 +102,9 @@
   };
 
 
+  
+
+
   // Add a new function to reset the chat
   const resetChat = () => {
     setMessageHistory([]); // Clears the conversation history
