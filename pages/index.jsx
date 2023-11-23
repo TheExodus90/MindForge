@@ -249,7 +249,7 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
         const revisedPrompt = responseData.data[0].revised_prompt;
         const imageUrl = responseData.data[0].url; // Extract imageUrl from responseData
         setResult((prevResult) =>
-          `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nDALL-E: ${revisedPrompt}\n\n<img src="${imageUrl}" alt="Generated Image" style="max-width: 50%; height: auto;">`
+          `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nDALL-E: ${revisedPrompt}\n\n<img src="${imageUrl}" alt="Generated Image" style="max-width: 80%; height: auto;">`
         );
         textForTTS = revisedPrompt;
       }
@@ -385,7 +385,7 @@ useEffect(() => {
   )}
 </div>
 
-<div className={styles.bodyText}> Welcome to MindForge by ExoFi Labs, a cutting-edge digital platform powered by ChatGPT, designed to revolutionize your online interactions. Our platform seamlessly integrates advanced AI communication with rapid voice synthesis capabilities from 11Labs and Google TTS, ensuring a dynamic and responsive user experience. Please select an AI Personality to chat with below. <div>Update: DALLE-3 Now Available!</div></div>
+<div className={styles.bodyText}> Welcome to MindForge by ExoFi Labs, a cutting-edge digital platform powered by ChatGPT. Our platform seamlessly integrates advanced AI communication with rapid voice synthesis capabilities from 11Labs and Google TTS, ensuring a dynamic and responsive experience. Please select an AI Personality to chat with below. <div>Update: DALLE-3 Now Available!</div></div>
       
       
   
@@ -454,54 +454,16 @@ useEffect(() => {
          </select>
          </div>
 
-
+         
+          {/* Conditional rendering based on selectedModel */}
+          {selectedModel === "GPT-3.5 Turbo" && (
           <div>
-            <label htmlFor="ttsProvider">TTS Provider: </label>
-            <select name="ttsProvider" value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
-            
-            <option value="GoogleTTS">Google TTS</option>
-            <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
-            </select>
-          </div>
-          
-          {/*<div>
-            <label htmlFor="mode">Personality: </label>
-            <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
-              <option value="genie">Genie</option>
-              <option value="assistant">Assistant</option>
-              <option value="simplify">Simplify</option>
-              <option value="positive">Positive</option>
-              <option value="storytelling">Storytelling</option>
-              <option value="coding">Coding Genius</option>
-              <option value="companion">Companion</option>
-              <option value="5H0D4N">5H0D4N</option>
-              <option value="counselor">Counselor</option>
-            </select>
-          </div>*/}
-
-          <div>
+          {/* Render character avatars/personalities here */}
+          <label htmlFor="mode">Select an AI to Chat with: </label>
           <div className={styles.characterAvatarContainer}>
+          {
           
-        </div>
-
-
-       
-
-        </div>
-
-        
-
-        
-
-        
-        <label htmlFor="mode">Select an AI to Chat with : </label>
-
-
-        </div>
-
-        
-
-<div className={styles.characterAvatarContainer}>
+          <div className={styles.characterAvatarContainer}>
 
 
 <div className={`${styles.shadowBox} ${mode === 'assistant' ? styles.selected : ''}`} onClick={() => setMode('assistant')}>
@@ -592,9 +554,60 @@ useEffect(() => {
   </div>
 
 
-  
-{/* ... */}
+         
+          
+          }
+          </div>
+          </div>
+          )}
 
+
+
+          <div>
+            <label htmlFor="ttsProvider">TTS Provider: </label>
+            <select name="ttsProvider" value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
+            
+            <option value="GoogleTTS">Google TTS</option>
+            <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
+            </select>
+          </div>
+          
+          {/*<div>
+            <label htmlFor="mode">Personality: </label>
+            <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
+              <option value="genie">Genie</option>
+              <option value="assistant">Assistant</option>
+              <option value="simplify">Simplify</option>
+              <option value="positive">Positive</option>
+              <option value="storytelling">Storytelling</option>
+              <option value="coding">Coding Genius</option>
+              <option value="companion">Companion</option>
+              <option value="5H0D4N">5H0D4N</option>
+              <option value="counselor">Counselor</option>
+            </select>
+          </div>*/}
+
+          <div>
+         
+
+
+       
+        </div>
+
+        
+
+             
+        
+
+
+        </div>
+
+        
+
+
+
+
+ 
 
 
 
