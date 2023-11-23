@@ -237,13 +237,13 @@
   background-color: #555555; /* Red background color */
   color: #fff; /* White text color */
   border: none; /* No border */
-  padding: 10px 20px; /* Padding similar to the submit button */
+  padding: 10px; /* Padding similar to the submit button */
   border-radius: 4px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
   transition: background-color 0.3s ease; /* Smooth background color transition */
   margin-left: 0px; /* Spacing between this button and the submit button */
   max-width: 15%;
-  min-width: 5%;
+  min-width: 10%;
   margin: 2px auto; /* Center-align the button horizontally */
 
 }

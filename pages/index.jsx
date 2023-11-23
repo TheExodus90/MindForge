@@ -57,7 +57,9 @@ const inputRef = useRef(null);
   const [userMessage, setUserMessage] = useState("");
   const prevModeRef = useRef(mode);
   const [isNightMode, setIsNightMode] = useState(true); // new state for night mode
-   const [selectedModel, setSelectedModel] = useState("GPT-3.5 Turbo");
+  const [selectedModel, setSelectedModel] = useState("GPT-3.5 Turbo");
+  const [showAvatars, setShowAvatars] = useState(false); // State to track avatar display
+
   const toggleNightMode = () => {
     setIsNightMode(!isNightMode);
   };
@@ -434,6 +436,12 @@ useEffect(() => {
             <input type="radio" name="voice" value="disabled" checked={voice === 'disabled'} onChange={(e) => setVoice(e.target.value)} /> Disable Voice
 
 
+            <div><input type="checkbox" name="avatarDisplay" checked={showAvatars} onChange={(e) => setShowAvatars(e.target.checked)} />  Show Avatars </div>
+            
+  
+
+
+
           </div>
 
            {/* Dropdown for model selection */}
@@ -496,48 +504,45 @@ useEffect(() => {
 <div className={styles.characterAvatarContainer}>
 
 
-  
 <div className={`${styles.shadowBox} ${mode === 'assistant' ? styles.selected : ''}`} onClick={() => setMode('assistant')}>
-  <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={styles.characterAvatarImage} />
-  <span>Assistant</span>
-</div>
+    {showAvatars && <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={styles.characterAvatarImage} />}
+    <span>Assistant</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'genie' ? styles.selected : ''}`} onClick={() => setMode('genie')}>
-  <img src="/pixel_characterAvatars/genie.png" alt="Genie" className={styles.characterAvatarImage} />
-  <span>Genie</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'genie' ? styles.selected : ''}`} onClick={() => setMode('genie')}>
+    {showAvatars && <img src="/pixel_characterAvatars/genie.png" alt="Genie" className={styles.characterAvatarImage} />}
+    <span>Genie</span>
+  </div>
 
+  <div className={`${styles.shadowBox} ${mode === 'simplify' ? styles.selected : ''}`} onClick={() => setMode('simplify')}>
+    {showAvatars && <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" className={styles.characterAvatarImage} />}
+    <span>Simplify Anything</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'simplify' ? styles.selected : ''}`} onClick={() => setMode('simplify')}>
-  <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" className={styles.characterAvatarImage} />
-  <span>Simplify Anything</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'counselor' ? styles.selected : ''}`} onClick={() => setMode('counselor')}>
+    {showAvatars && <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={styles.characterAvatarImage} />}
+    <span>Counsellor</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'counselor' ? styles.selected : ''}`} onClick={() => setMode('counselor')}>
-  <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={styles.characterAvatarImage} />
-  <span>Counsellor</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'storytelling' ? styles.selected : ''}`} onClick={() => setMode('storytelling')}>
+    {showAvatars && <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" className={styles.characterAvatarImage} />}
+    <span>The Story Teller</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'storytelling' ? styles.selected : ''}`} onClick={() => setMode('storytelling')}>
-  <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" className={styles.characterAvatarImage} />
-  <span>The Storyteller</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'coding' ? styles.selected : ''}`} onClick={() => setMode('coding')}>
+    {showAvatars && <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" className={styles.characterAvatarImage} />}
+    <span>Coding Guru</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'coding' ? styles.selected : ''}`} onClick={() => setMode('coding')}>
-  <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" className={styles.characterAvatarImage} />
-  <span>Coding Guru</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'companion' ? styles.selected : ''}`} onClick={() => setMode('companion')}>
+    {showAvatars && <img src="/pixel_characterAvatars/companion.png" alt="Companion" className={styles.characterAvatarImage} />}
+    <span>Friend</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'companion' ? styles.selected : ''}`} onClick={() => setMode('companion')}>
-  <img src="/pixel_characterAvatars/companion.png" alt="Companion" className={styles.characterAvatarImage} />
-  <span>Companion</span>
-</div>
-
-<div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
-  <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />
-  <span>5H0D4N</span>
-
-</div>
+  <div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
+    {showAvatars && <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />}
+    <span>5H0D4N</span>
+  </div>
 
 
 
