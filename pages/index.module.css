@@ -11,7 +11,7 @@
 /* Night Mode styles */
 .nightMode {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #232323, #0e0e0e, #0a3b09);
+  background: linear-gradient(135deg, rgb(9, 75, 12), rgb(2, 14, 5), #0a3b09);
   background-size: 400% 400%;
   animation: gradient 10s ease infinite;
   color: #d8d8d8;
@@ -22,7 +22,7 @@
 /* Day Mode styles */
 .dayMode {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #73af6b, #8cccac, #56aa79); /* Lighter gradient for day mode */
+  background: linear-gradient(135deg, #70b167, #88ceab, #aff0ca); /* Lighter gradient for day mode */
   color: #1d1818; /* Darker text color for better readability */
   line-height: 24px;
   animation: gradient 10s ease infinite;
@@ -31,15 +31,14 @@
   /* ... [other day mode specific styles, lighter versions of night mode styles] */
 
   .main form {
-    justify-content: center;
     display: flex;
     flex-direction: column;
     width: auto;
     max-width: 80%; /* Responsive max-width */
-    background-color: rgba(41, 87, 41, 0.35);
+    background-color: rgba(17, 17, 19, 0.8);
     padding: 20px;
     border-radius: 10px;
-    margin-bottom: 20px;  
+    margin-bottom: 20px;
   }
 
   /* Styling for headings */
@@ -61,12 +60,21 @@
   font-weight: bold;
   margin-top: 40px;
   background-color: rgba(181, 201, 190, 0.9);
-  padding: 20px;
+  padding: 10px;
   border-radius: 10px;
-  width: 100%;
-  max-width: 80%; /* Responsive max-width */
-  height: 220px;
+  width: 65%;
+  min-height: 500px;
+  max-width: 100%; /* Responsive max-width */
   color: #3f3c3c; /* Light color for text */
+
+
+/* In your index.module.css or similar file */
+.result img {
+  max-width: 90%;  /* Adjust this value as needed */
+  max-height: 90;
+}
+
+
 }
 
 /* Text input styling */
@@ -138,7 +146,7 @@
 .body {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
   background: linear-gradient(135deg, #232323, #0e0e0e, #0a3b09);
-  background-size: 400% 400%;
+  background-size: cover;
   animation: gradient 10s ease infinite;
   color: #d8d8d8;
   line-height: 24px;
@@ -146,6 +154,7 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
+  
 }
 
 /* Main container styling */
@@ -154,7 +163,6 @@
   flex-direction: column;
   align-items: center;
   padding-top: 60px;
-  min-height: 100vh; /* Set a minimum height to fill the entire viewport */
 }
 
 /* Styling for headings */
@@ -169,12 +177,11 @@
 
 /* Form styling */
 .main form {
-  justify-content: center;
   display: flex;
   flex-direction: column;
   width: auto;
   max-width: 80%; /* Responsive max-width */
-  background-color: rgba(17, 17, 19, 0.55);
+  background-color: rgba(17, 17, 19, 0.9);
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
@@ -256,19 +263,19 @@
 }
 
 
-/* Result box styling */
+/* Update result box styling to handle overflow */
 .main .result {
   font-weight: bold;
   margin-top: 40px;
   background-color: rgba(17, 17, 19, 0.9);
   padding: 20px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 80%; /* Responsive max-width */
-  height: 220px;
-  color: #d8d8d8; /* Light color for text */
+  border-radius: 12px;
+  width: 70%; /* Consistent with form width */
+  max-height: 1000px; /* Increased height */
+  min-height: 500px;
+  overflow-y: auto; /* Scrollbar for overflow */
+  color: #d8d8d8;
 }
-
 
 /* Avatar container styles */
 .main .avatar-container {
@@ -300,6 +307,7 @@
   width: 100%;
   height: auto;
   border-radius: 10px; /* Rounded corners */
+  margin-bottom: 5px;
 }
 
 /* Keyframes for gradient animation */
@@ -337,9 +345,8 @@
 }
 
 /* Responsive design adjustments for smaller screens */
-@media (max-width: 600px) {
-  .main form,
-  .main .result {
+@media (max-width: 800px) {
+  .main .result, .main form {
     max-width: 90%;
   }
 
@@ -444,3 +451,29 @@
 .copyRight {
   color: #666; /* Example color */
 }
+
+
+
+
+.characterBox {
+  border: 1px solid rgb(52, 170, 22);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.characterBox:hover, .characterBox.selected {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.selected {
+  background-color: #0f8e6c; /* A distinct color for selected state */
+  color: #ffffff; /* White text color for better readability */
+  border: 2px solid #098f41; /* White border to highlight the selected character */
+  border-radius: 3px;
+}
+

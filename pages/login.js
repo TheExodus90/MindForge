@@ -40,7 +40,7 @@ function LoginPage() {
     return (
         <div className={styles.body}>
             <div className={styles.main}>
-                <h3>Login</h3>
+                <h1>Login</h1>
                 {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
                 <form onSubmit={handleLogin}>
                     <div>

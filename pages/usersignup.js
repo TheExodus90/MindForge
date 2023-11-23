@@ -43,7 +43,7 @@ function SignUpPage() {
 
     return (
         <div className={`${styles.body} ${styles.main}`}>
-            <h2>Sign Up</h2>
+            <h1>Sign Up</h1>
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
             {notification && <p style={{ color: 'green' }} dangerouslySetInnerHTML={{ __html: notification }} />}
             <form onSubmit={handleSignUp}>
