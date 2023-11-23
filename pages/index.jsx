@@ -449,7 +449,7 @@ useEffect(() => {
          <label htmlFor="modelSelection">Select Model: </label>
           <select name="modelSelection" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
           <option value="GPT-3.5 Turbo">GPT-3.5 Turbo</option>
-          <option value="DALL-E-3">DALL-E-3</option>
+          <option value="DALL-E-3">DALL-E-3 (Image Generation)</option>
           {/* Add more models as they become available */}
          </select>
          </div>
@@ -539,10 +539,10 @@ useEffect(() => {
     <span>Friend</span>
   </div>
 
-  <div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
+  {/*<div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
     {showAvatars && <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />}
     <span>5H0D4N</span>
-  </div>
+        </div>*/}
 
 
 
