@@ -444,6 +444,12 @@ useEffect(() => {
 
           </div>
 
+
+
+
+
+          
+
            {/* Dropdown for model selection */}
          <div>
          <label htmlFor="modelSelection">Select Model: </label>
@@ -453,6 +459,15 @@ useEffect(() => {
           {/* Add more models as they become available */}
          </select>
          </div>
+
+         <div>
+            <label htmlFor="ttsProvider">TTS Provider: </label>
+            <select name="ttsProvider" value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
+            
+            <option value="GoogleTTS">Google TTS</option>
+            <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
+            </select>
+          </div>
 
          
           {/* Conditional rendering based on selectedModel */}
@@ -471,9 +486,9 @@ useEffect(() => {
     <span>Assistant</span>
   </div>
 
-  <div className={`${styles.shadowBox} ${mode === 'genie' ? styles.selected : ''}`} onClick={() => setMode('genie')}>
-    {showAvatars && <img src="/pixel_characterAvatars/genie.png" alt="Genie" className={styles.characterAvatarImage} />}
-    <span>Genie</span>
+  <div className={`${styles.shadowBox} ${mode === 'academicWriter' ? styles.selected : ''}`} onClick={() => setMode('academicWriter')}>
+    {showAvatars && <img src="/pixel_characterAvatars/academicWriter.png" alt="academicWriter" className={styles.characterAvatarImage} />}
+    <span>Academic Writer</span>
   </div>
 
   <div className={`${styles.shadowBox} ${mode === 'simplify' ? styles.selected : ''}`} onClick={() => setMode('simplify')}>
@@ -547,14 +562,17 @@ useEffect(() => {
     </label>
   </div>
 
+  
+
 */}
 
 
+    
 
   </div>
 
 
-         
+        
           
           }
           </div>
@@ -563,14 +581,7 @@ useEffect(() => {
 
 
 
-          <div>
-            <label htmlFor="ttsProvider">TTS Provider: </label>
-            <select name="ttsProvider" value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
-            
-            <option value="GoogleTTS">Google TTS</option>
-            <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
-            </select>
-          </div>
+          
           
           {/*<div>
             <label htmlFor="mode">Personality: </label>
