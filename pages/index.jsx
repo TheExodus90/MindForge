@@ -93,6 +93,8 @@ const updateRemainingMessages = () => {
 
 
 
+
+
 const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
   const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
@@ -119,12 +121,7 @@ const resetChat = () => {
   // Add any additional state resets here as needed
 };
 
-useEffect(() => {
-  if (prevModeRef.current !== mode) {
-    resetChat();
-  }
-  prevModeRef.current = mode; // Update the ref to the current mode
-}, [mode]); // Re-run the effect if 'mode' changes
+
 
 
 
@@ -150,8 +147,14 @@ useEffect(() => {
 }, [session]); // Depend on session state
 
 
-
-
+useEffect(() => {
+ 
+  if (prevModeRef.current !== mode) {
+    resetChat();
+  }
+  prevModeRef.current = mode; // Update the ref to the current mode
+}, [mode]); // Re-run the effect if 'mode' changes
+console.log("Current Mode:", mode);
 
 // Function to insert interaction into the Supabase database
 async function insertInteraction(userId, conversationId, text) {
@@ -227,12 +230,14 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
   }
 
   try {
+    const requestBody = JSON.stringify({ prompt: promptInput, mode: mode });
+    console.log("Sending request with body:", requestBody);
     const response = await fetch(apiEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ prompt: promptInput }),
+      body: requestBody, // Use the requestBody here
     });
 
     const data = await response.json();
