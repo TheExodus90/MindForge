@@ -57,7 +57,9 @@ const inputRef = useRef(null);
   const [userMessage, setUserMessage] = useState("");
   const prevModeRef = useRef(mode);
   const [isNightMode, setIsNightMode] = useState(true); // new state for night mode
-   const [selectedModel, setSelectedModel] = useState("GPT-3.5 Turbo");
+  const [selectedModel, setSelectedModel] = useState("GPT-3.5 Turbo");
+  const [showAvatars, setShowAvatars] = useState(false); // State to track avatar display
+
   const toggleNightMode = () => {
     setIsNightMode(!isNightMode);
   };
@@ -91,8 +93,6 @@ const updateRemainingMessages = () => {
 
 
 
-
-
 const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
   const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
@@ -119,7 +119,17 @@ const resetChat = () => {
   // Add any additional state resets here as needed
 };
 
-
+useEffect(() => {
+  if (prevModeRef.current !== mode) {
+    resetChat();
+    // Check if there's already a user input to send with the new mode.
+    // If not, you might want to skip the API call or send a default prompt.
+    if (promptInput) {
+      callApi(promptInput, mode);
+    }
+  }
+  prevModeRef.current = mode; // Update the ref to the current mode
+}, [mode, promptInput]); // Also depend on promptInput to ensure it's not empty
 
 
 
@@ -145,14 +155,8 @@ useEffect(() => {
 }, [session]); // Depend on session state
 
 
-useEffect(() => {
- 
-  if (prevModeRef.current !== mode) {
-    resetChat();
-  }
-  prevModeRef.current = mode; // Update the ref to the current mode
-}, [mode]); // Re-run the effect if 'mode' changes
-console.log("Current Mode:", mode);
+
+
 
 // Function to insert interaction into the Supabase database
 async function insertInteraction(userId, conversationId, text) {
@@ -169,44 +173,44 @@ async function insertInteraction(userId, conversationId, text) {
 
     return true;
 }
-const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDefault === 'function'){
+
+
+
+const onSubmit = async (e) => {
+  if (e && e.preventDefault && typeof e.preventDefault === 'function') {
   e.preventDefault();
   setIsLoading(true);
 
-  let textForTTS = ""; // Declare textForTTS at the beginning of the function
-  
-
-
-
   if (!session && !checkMessageCount()) {
-    return; // Early return if message limit is reached
+    // Early return if message limit is reached
+    return;
   }
-  
-    const userInputTokens = Math.ceil(promptInput.length / 4);
-    let newTotalTokens = totalTokens + userInputTokens;
-    let newMessageHistory = [...messageHistory, {role: 'user', content: promptInput}];
-    
-  
-    while (newTotalTokens > (4096 - avgModelResponseTokens)) {
-      const removedMessage = newMessageHistory.shift();
-      const removedTokens = Math.ceil(removedMessage.content.length / 4);
-      newTotalTokens -= removedTokens;
-    }
 
-    // If an anonymous user sends a message, increment the message count
-    if (!session) {
-      const key = 'anonymousMessageCount';
-      let messageCount = parseInt(localStorage.getItem(key) || '0', 10);
-      localStorage.setItem(key, (messageCount + 1).toString());
-      updateRemainingMessages(); // Make sure this is called right after updating localStorage
-    }
+  const userInputTokens = Math.ceil(promptInput.length / 4);
+  let newTotalTokens = totalTokens + userInputTokens;
+  let newMessageHistory = [...messageHistory, { role: 'user', content: promptInput }];
+
+  while (newTotalTokens > (4096 - avgModelResponseTokens)) {
+    const removedMessage = newMessageHistory.shift();
+    const removedTokens = Math.ceil(removedMessage.content.length / 4);
+    newTotalTokens -= removedTokens;
+  }
+
+  // If an anonymous user sends a message, increment the message count
+  if (!session) {
+    const key = 'anonymousMessageCount';
+    let messageCount = parseInt(localStorage.getItem(key) || '0', 10);
+    localStorage.setItem(key, (messageCount + 1).toString());
+    updateRemainingMessages();
+  }
+
+ // Update state
+  setTotalTokens(newTotalTokens);
+  setMessageHistory(newMessageHistory);
   
-    // Update state
-    setTotalTokens(newTotalTokens);
-    setMessageHistory(newMessageHistory);
-      
-    e.preventDefault();
-    setIsLoading(true); 
+   // Call the API
+   await callApi(promptInput, mode);
+  
 
     let responseData; // Define responseData outside the try-catch block
 
@@ -224,47 +228,39 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
     apiEndpoint = "/api/dalleGen";
     console.log("DALL-E API response:", responseData);
   } else {
-    // Handle other cases or set a default endpoint if needed
+    // Handle other cases or set a default endpoint if needed.
   }
 
-  try {
-    const requestBody = JSON.stringify({ prompt: promptInput, mode: mode });
-    console.log("Sending request with body:", requestBody);
-    const response = await fetch(apiEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: requestBody, // Use the requestBody here
-    });
 
-    const data = await response.json();
-    responseData = data; // Assign the response data to responseData
-
-    if (selectedModel === "GPT-3.5 Turbo") {
-      const chatGptResponse = data.result.trim();
-      setResult((prevResult) =>
-        `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nChatGPT: ${chatGptResponse}`
-      );
-      textForTTS = chatGptResponse;
-    } else if (selectedModel === "DALL-E-3") {
-      if (responseData && responseData.data && responseData.data.length > 0) {
-        const revisedPrompt = responseData.data[0].revised_prompt;
-        const imageUrl = responseData.data[0].url; // Extract imageUrl from responseData
-        setResult((prevResult) =>
-          `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nDALL-E: ${revisedPrompt}\n\n<img src="${imageUrl}" alt="Generated Image" style="max-width: 50%; height: auto;">`
-        );
-        textForTTS = revisedPrompt;
+  const callApi = async (prompt, currentMode) => {
+    setIsLoading(true);
+    const apiEndpoint = currentMode === "DALL-E-3" ? "/api/dalleGen" : "/api/generate";
+  
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, mode: currentMode }),
+      });
+  
+      const data = await response.json();
+  
+      if (currentMode === "DALL-E-3" && data.data && data.data.length > 0) {
+        // Processing for DALL-E-3 model
+        const revisedPrompt = data.data[0].revised_prompt;
+        const imageUrl = data.data[0].url;
+        setResult(`${revisedPrompt}\n\n<img src="${imageUrl}" alt="Generated Image" style="max-width: 50%; height: auto;">`);
+      } else {
+        // Handling response for GPT-3.5 Turbo and other modes
+        setResult(`You: ${prompt}\nChatGPT: ${data.result.trim()}`);
       }
-    }
-
-
-  } catch (error) {
-    console.error('Error during API call:', error);
-  } finally {
-    setIsLoading(false);
+    } catch (error) {
+      console.error('Error during API call:', error);
+      setResult("An error occurred while processing your request.");
+    } finally {
+      setIsLoading(false);
   }
-
+};
 
 
     
@@ -439,6 +435,12 @@ useEffect(() => {
             <input type="radio" name="voice" value="disabled" checked={voice === 'disabled'} onChange={(e) => setVoice(e.target.value)} /> Disable Voice
 
 
+            <div><input type="checkbox" name="avatarDisplay" checked={showAvatars} onChange={(e) => setShowAvatars(e.target.checked)} />  Show Avatars </div>
+            
+  
+
+
+
           </div>
 
            {/* Dropdown for model selection */}
@@ -446,7 +448,7 @@ useEffect(() => {
          <label htmlFor="modelSelection">Select Model: </label>
           <select name="modelSelection" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
           <option value="GPT-3.5 Turbo">GPT-3.5 Turbo</option>
-          <option value="DALL-E-3">DALL-E-3</option>
+          <option value="DALL-E-3">DALL-E-3 (Image Generation)</option>
           {/* Add more models as they become available */}
          </select>
          </div>
@@ -461,7 +463,7 @@ useEffect(() => {
             </select>
           </div>
           
-          {/*<div>
+          /*<div>
             <label htmlFor="mode">Personality: </label>
             <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
               <option value="genie">Genie</option>
@@ -474,7 +476,9 @@ useEffect(() => {
               <option value="5H0D4N">5H0D4N</option>
               <option value="counselor">Counselor</option>
             </select>
-          </div>*/}
+          </div>*/
+
+          
 
           <div>
           <div className={styles.characterAvatarContainer}>
@@ -501,51 +505,45 @@ useEffect(() => {
 <div className={styles.characterAvatarContainer}>
 
 
-  
 <div className={`${styles.shadowBox} ${mode === 'assistant' ? styles.selected : ''}`} onClick={() => setMode('assistant')}>
-  <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={styles.characterAvatarImage} />
-  <span>Assistant</span>
-</div>
+    {showAvatars && <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={styles.characterAvatarImage} />}
+    <span>Assistant</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'genie' ? styles.selected : ''}`} onClick={() => setMode('genie')}>
-  <img src="/pixel_characterAvatars/genie.png" alt="Genie" className={styles.characterAvatarImage} />
-  <span>Genie</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'genie' ? styles.selected : ''}`} onClick={() => setMode('genie')}>
+    {showAvatars && <img src="/pixel_characterAvatars/genie.png" alt="Genie" className={styles.characterAvatarImage} />}
+    <span>Genie</span>
+  </div>
 
+  <div className={`${styles.shadowBox} ${mode === 'simplify' ? styles.selected : ''}`} onClick={() => setMode('simplify')}>
+    {showAvatars && <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" className={styles.characterAvatarImage} />}
+    <span>Simplify Anything</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'simplify' ? styles.selected : ''}`} onClick={() => setMode('simplify')}>
-  <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" className={styles.characterAvatarImage} />
-  <span>Simplify Anything</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'counselor' ? styles.selected : ''}`} onClick={() => setMode('counselor')}>
+    {showAvatars && <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={styles.characterAvatarImage} />}
+    <span>Counsellor</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'counselor' ? styles.selected : ''}`} onClick={() => setMode('counselor')}>
-  <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={styles.characterAvatarImage} />
-  <span>Counsellor</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'storytelling' ? styles.selected : ''}`} onClick={() => setMode('storytelling')}>
+    {showAvatars && <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" className={styles.characterAvatarImage} />}
+    <span>The Story Teller</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'storytelling' ? styles.selected : ''}`} onClick={() => setMode('storytelling')}>
-  <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" className={styles.characterAvatarImage} />
-  <span>The Storyteller</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'coding' ? styles.selected : ''}`} onClick={() => setMode('coding')}>
+    {showAvatars && <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" className={styles.characterAvatarImage} />}
+    <span>Coding Guru</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'coding' ? styles.selected : ''}`} onClick={() => setMode('coding')}>
-  <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" className={styles.characterAvatarImage} />
-  <span>Coding Guru</span>
-</div>
+  <div className={`${styles.shadowBox} ${mode === 'companion' ? styles.selected : ''}`} onClick={() => setMode('companion')}>
+    {showAvatars && <img src="/pixel_characterAvatars/companion.png" alt="Companion" className={styles.characterAvatarImage} />}
+    <span>Friend</span>
+  </div>
 
-<div className={`${styles.shadowBox} ${mode === 'companion' ? styles.selected : ''}`} onClick={() => setMode('companion')}>
-  <img src="/pixel_characterAvatars/companion.png" alt="Companion" className={styles.characterAvatarImage} />
-  <span>Companion</span>
-</div>
-
-<div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
-  <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />
-  <span>5H0D4N</span>
-
-</div>
-
-
-
+  <div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
+    {showAvatars && <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />}
+    <span>5H0D4N</span>
+        </div>
 
 
 {/*
@@ -583,17 +581,12 @@ useEffect(() => {
       <img src="/avatars/avatar4.png" alt="Avatar 4" className={`${styles.avatarImage} ${styles.avatarRoundedCorners}`} />
       
     </label>
-  </div>
+        </div> */}
 
-*/}
-
-
-
-  </div>
+        
 
 
-  
-{/* ... */}
+        </div>
 
 
 

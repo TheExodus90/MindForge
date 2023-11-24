@@ -15,6 +15,9 @@
     const mode = req.body.mode || "expert";
     let systemMessage = "";
 
+    console.log("Received mode:", req.body.mode);
+  console.log("Received request body:", req.body);
+
     if (prompt.trim().length === 0) {
       res.status(400).json({
         error: {
