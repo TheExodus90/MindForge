@@ -43,3 +43,4 @@ supabasefetch.js
 transcribe.js
 VoiceList11labs.txt
 pages\api\subscribe.jsx
+pages\extrafuncs.js
