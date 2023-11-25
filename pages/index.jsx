@@ -156,7 +156,7 @@ useEffect(() => {
   }
   prevModeRef.current = mode; // Update the ref to the current mode
 }, [mode]); // Re-run the effect if 'mode' changes
-console.log("Current Mode:", mode);
+
 
 // Function to insert interaction into the Supabase database
 async function insertInteraction(userId, conversationId, text) {
@@ -233,13 +233,14 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
 
   try {
     const requestBody = JSON.stringify({ prompt: promptInput, mode: mode });
-    console.log("Sending request with body:", requestBody);
+   
     const response = await fetch(apiEndpoint, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: requestBody, // Use the requestBody here
+      timeout: 15000, // Set the timeout in milliseconds (e.g., 15 seconds)
     });
 
     const data = await response.json();
