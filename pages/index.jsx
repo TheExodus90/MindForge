@@ -240,7 +240,7 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
         "Content-Type": "application/json",
       },
       body: requestBody, // Use the requestBody here
-      timeout: 30000, // Set the timeout in milliseconds (e.g., 17 seconds)
+      timeout: 45000, // Set the timeout in milliseconds (e.g., 17 seconds)
     });
 
     const data = await response.json();
