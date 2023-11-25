@@ -1,4 +1,4 @@
-// pages/dalle-page.js
+// pages/dalle.js
 import { useState } from 'react';
 import styles from './index.module.css'; // Importing the CSS module
 

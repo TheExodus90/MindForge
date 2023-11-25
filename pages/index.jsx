@@ -22,13 +22,15 @@ async function uploadChatHistory(userId, conversationId, userMessage, chatGptRes
     created_at: currentTime
   };
 
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from('OdysseyInteractions')
-    .insert([chatHistory]);
+    .upsert([chatHistory], { onConflict: ['conversation_id'], returning: ['*'] });
 
   if (error) {
     console.error('Error uploading chat history:', error);
     return;
+
+    
   }
 }
 
@@ -260,7 +262,12 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
       }
     }
 
+      // Generate a UUID for conversationId and update DB
+      const conversationId = uuidv4();
+    
+    await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, textForTTS);
 
+    
   } catch (error) {
     console.error('Error during API call:', error);
   } finally {
@@ -503,7 +510,7 @@ useEffect(() => {
 
   <div className={`${styles.shadowBox} ${mode === 'counselor' ? styles.selected : ''}`} onClick={() => setMode('counselor')}>
     {showAvatars && <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={styles.characterAvatarImage} />}
-    <span>Counsellor</span>
+    <span>Counselor</span>
   </div>
 
   <div className={`${styles.shadowBox} ${mode === 'storytelling' ? styles.selected : ''}`} onClick={() => setMode('storytelling')}>

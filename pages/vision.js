@@ -37,7 +37,7 @@ export default function VisionPage() {
 
   return (
     <div className={styles.body}>
-      <h1 className={styles.main}>GPT-4 Vision</h1>
+      <h1 className={styles.main}>Vision</h1>
       <form onSubmit={handleSubmit} className={styles.mainForm}>
         <input type="file" onChange={handleImageChange} className={styles.inputFile} />
         <input 
