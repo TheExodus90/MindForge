@@ -11,7 +11,7 @@
 /* Night Mode styles */
 .nightMode {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, rgb(9, 75, 12), rgb(2, 14, 5), #0a3b09);
+  background: linear-gradient(135deg, rgb(9, 75, 12), rgb(4, 22, 9), #0d440c);
   background-size: 400% 400%;
   animation: gradient 10s ease infinite;
   color: #d8d8d8;
@@ -26,22 +26,21 @@
   color: #1d1818; /* Darker text color for better readability */
   line-height: 24px;
   animation: gradient 10s ease infinite;
-  color: #d8d8d8;
-  line-height: 24px;
   /* ... [other day mode specific styles, lighter versions of night mode styles] */
+}
 
-  .main form {
-    display: flex;
-    flex-direction: column;
-    width: auto;
-    max-width: 80%; /* Responsive max-width */
-    background-color: rgba(17, 17, 19, 0.8);
-    padding: 20px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-  }
+.dayMode .main form {
+  display: flex;
+  flex-direction: column;
+  width: auto;
+  max-width: 80%; /* Responsive max-width */
+  background-color: rgba(55, 55, 61, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
 
-  /* Styling for headings */
+/* Styling for headings */
 .main h3 {
   font-size: 32px;
   line-height: 40px;
@@ -51,8 +50,8 @@
   color: #247033;
 }
 
-.welcomeLogoutContainer
-{color: #2c853e;
+.welcomeLogoutContainer {
+  color: #2c853e;
 }
 
 /* Result box styling */
@@ -66,15 +65,12 @@
   min-height: 500px;
   max-width: 100%; /* Responsive max-width */
   color: #3f3c3c; /* Light color for text */
-
-
-/* In your index.module.css or similar file */
-.result img {
-  max-width: 90%;  /* Adjust this value as needed */
-  max-height: 90;
 }
 
-
+/* In your index.module.css or similar file */
+.main .result img {
+  max-width: 90%;  /* Adjust this value as needed */
+  max-height: 90%;
 }
 
 /* Text input styling */
@@ -89,14 +85,9 @@
   transition: all 0.3s ease;
 }
 
-.userMessageStyle
-{
+.userMessageStyle {
   color: #247033;
 }
-
-
-}
-
 
 /* Styling for the Night Mode Toggle Switch */
 .nightModeToggle {
@@ -133,19 +124,10 @@
   cursor: pointer;
 }
 
-
-/* Base class for applying reset styles */
-.base {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
-}
-
 /* Body styles for background and font */
 .body {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #232323, #0e0e0e, #0a3b09);
+  background: linear-gradient(135deg, rgb(9, 75, 12), rgb(4, 22, 9), #0d440c);
   background-size: cover;
   animation: gradient 10s ease infinite;
   color: #d8d8d8;
@@ -154,7 +136,6 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  
 }
 
 /* Main container styling */
@@ -165,28 +146,16 @@
   padding-top: 60px;
 }
 
-/* Styling for headings */
-.main h3 {
-  font-size: 32px;
-  line-height: 40px;
-  font-weight: 600; /* Using weight from imported font */
-  margin: 16px 0 10px;
-  text-transform: uppercase;
-  color: #746f6f;
-}
-
 /* Form styling */
 .main form {
   display: flex;
   flex-direction: column;
   width: auto;
   max-width: 80%; /* Responsive max-width */
-  background-color: rgba(17, 17, 19, 0.9);
+  background-color: rgba(17, 17, 19, 0.8);
   padding: 20px;
   border-radius: 10px;
   margin-bottom: 20px;
-  
-  
 }
 
 /* Text input styling */
@@ -231,7 +200,6 @@
   background-color: #10a37f;
 }
 
-
 .resetButton {
   padding: 12px 0;
   background-color: #555555; /* Red background color */
@@ -245,7 +213,6 @@
   max-width: 15%;
   min-width: 10%;
   margin: 2px auto; /* Center-align the button horizontally */
-
 }
 
 .resetButton:hover {
@@ -257,11 +224,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 50 px; /* This adds space between your buttons */
+  gap: 50px; /* This adds space between your buttons */
   margin: 2px;
-
 }
-
 
 /* Update result box styling to handle overflow */
 .main .result {
@@ -272,7 +237,7 @@
   border-radius: 12px;
   width: 70%; /* Consistent with form width */
   max-height: 1000px; /* Increased height */
-  min-height: 500px;
+  min-height: 600px;
   overflow-y: auto; /* Scrollbar for overflow */
   color: #d8d8d8;
 }
@@ -336,8 +301,6 @@
   }
 }
 
-
-
 /* Links container for additional styling */
 .linksContainer {
   margin-top: 5px;
@@ -346,7 +309,8 @@
 
 /* Responsive design adjustments for smaller screens */
 @media (max-width: 800px) {
-  .main .result, .main form {
+  .main .result,
+  .main form {
     max-width: 90%;
   }
 
@@ -354,7 +318,6 @@
     font-size: 24px;
   }
 }
-
 
 .login-container {
   background-color: white;
@@ -392,11 +355,9 @@
 .modelSettings {
   justify-content: center;
   align-items: center;
-  
 }
 
-.userMessageStyle
-{
+.userMessageStyle {
   color: #247033;
   justify-content: center;
   align-items: center;
@@ -405,8 +366,7 @@
   font-weight: 450;
 }
 
-.bodyText
-{
+.bodyText {
   color: #247033;
   justify-content: center;
   align-items: center;
@@ -417,7 +377,6 @@
   background-color: #f8f8f8; /* Example background color */
   padding: 20px;
   text-align: center;
-  
 }
 
 .footerContent {
@@ -446,20 +405,15 @@
   gap: 20px; /* Space between links */
 }
 
-
-
 .copyRight {
   color: #666; /* Example color */
 }
-
-
-
 
 .characterBox {
   border: 1px solid rgb(52, 170, 22);
   padding: 10px;
   border-radius: 5px;
-  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
   margin-bottom: 10px;
   cursor: pointer;
@@ -467,7 +421,7 @@
 }
 
 .characterBox:hover, .characterBox.selected {
-  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 }
 
 .selected {
@@ -476,4 +430,3 @@
   border: 2px solid #098f41; /* White border to highlight the selected character */
   border-radius: 3px;
 }
-
