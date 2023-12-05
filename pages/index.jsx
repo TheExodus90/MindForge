@@ -239,7 +239,6 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
         "Content-Type": "application/json",
       },
       body: requestBody, // Use the requestBody here
-      timeout: 200000, // Set the timeout in milliseconds (e.g., 17 seconds)
     });
 
     const data = await response.json();
@@ -454,15 +453,7 @@ useEffect(() => {
             <div><input type="checkbox" name="avatarDisplay" checked={showAvatars} onChange={(e) => setShowAvatars(e.target.checked)} />  Show Avatars </div>
             
   
-
-
-
           </div>
-
-
-
-
-
           
 
            {/* Dropdown for model selection */}
@@ -631,14 +622,7 @@ useEffect(() => {
         
 
 
-
-
- 
-
-
-
 </form>
-
 
 
 <div className={styles.result}>
