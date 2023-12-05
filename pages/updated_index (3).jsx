@@ -11,14 +11,13 @@ import { v4 as uuidv4 } from 'uuid';
 import Footer from '../components/footer';
 
 
-async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse, role) {
+async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse) {
   const currentTime = new Date().toISOString();
   // Use a generated UUID for anonymous users
   const anonymousUserId = uuidv4();
   const chatHistory = {
     user_id: userId === 'anonymous' ? anonymousUserId : userId,
     conversation_id: conversationId,
-    role, // Add the role here (e.g., 'user' or 'ChatGPT')
     text: JSON.stringify({ userMessage, chatGptResponse }),
     created_at: currentTime
   };
@@ -30,8 +29,11 @@ async function uploadChatHistory(userId, conversationId, userMessage, chatGptRes
   if (error) {
     console.error('Error uploading chat history:', error);
     return;
+
+    
   }
 }
+
 
 
 
@@ -59,7 +61,6 @@ const inputRef = useRef(null);
   const [isNightMode, setIsNightMode] = useState(true); // new state for night mode
   const [selectedModel, setSelectedModel] = useState("GPT-3.5 Turbo");
   const [showAvatars, setShowAvatars] = useState(false); // State to track avatar display
-  const [chatHistory, setChatHistory] = useState([]);
 
   const toggleNightMode = () => {
     setIsNightMode(!isNightMode);
@@ -239,31 +240,28 @@ const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDef
         "Content-Type": "application/json",
       },
       body: requestBody, // Use the requestBody here
-      timeout: 100000, // Set the timeout in milliseconds (e.g., 17 seconds)
+      timeout: 45000, // Set the timeout in milliseconds (e.g., 17 seconds)
     });
 
     const data = await response.json();
     responseData = data; // Assign the response data to responseData
 
-   // After receiving a response from the AI model
-if (selectedModel === "GPT-3.5 Turbo") {
-  const chatGptResponse = data.result.trim();
-  const newMessage = { role: 'user', content: promptInput };
-  const newResponse = { role: 'ChatGPT', content: chatGptResponse };
-  setChatHistory((prevHistory) => [...prevHistory, newMessage, newResponse]);
-  textForTTS = chatGptResponse;
-  await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, chatGptResponse, 'user');
-} else if (selectedModel === "DALL-E-3") {
-  if (responseData && responseData.data && responseData.data.length > 0) {
-    const revisedPrompt = responseData.data[0].revised_prompt;
-    const imageUrl = responseData.data[0].url;
-    const newMessage = { role: 'user', content: promptInput };
-    const newResponse = { role: 'DALL-E', content: revisedPrompt, image: imageUrl };
-    setChatHistory((prevHistory) => [...prevHistory, newMessage, newResponse]);
-    textForTTS = revisedPrompt;
-    await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, revisedPrompt, 'user');
-  }
-}
+    if (selectedModel === "GPT-3.5 Turbo") {
+      const chatGptResponse = data.result.trim();
+      setResult((prevResult) =>
+        `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nChatGPT: ${chatGptResponse}`
+      );
+      textForTTS = chatGptResponse;
+    } else if (selectedModel === "DALL-E-3") {
+      if (responseData && responseData.data && responseData.data.length > 0) {
+        const revisedPrompt = responseData.data[0].revised_prompt;
+        const imageUrl = responseData.data[0].url; // Extract imageUrl from responseData
+        setResult((prevResult) =>
+          `${prevResult ? prevResult + '\n\n' : ''}You: ${promptInput}\nDALL-E: ${revisedPrompt}\n\n<img src="${imageUrl}" alt="Generated Image" style="max-width: 80%; height: auto;">`
+        );
+        textForTTS = revisedPrompt;
+      }
+    }
 
       // Generate a UUID for conversationId and update DB
       const conversationId = uuidv4();
@@ -601,6 +599,7 @@ useEffect(() => {
           {/*<div>
             <label htmlFor="mode">Personality: </label>
             <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
+              <option value="davinci-002">Davinci-002</option>
               <option value="genie">Genie</option>
               <option value="assistant">Assistant</option>
               <option value="simplify">Simplify</option>
@@ -641,18 +640,13 @@ useEffect(() => {
 
 
 
-<div className={styles.result}>
-  {chatHistory.map((message, index) => (
-    <div key={index} className={message.role === 'user' ? styles.userMessage : styles.chatGptMessage}>
-      
-      {message.role === 'user' ? 'You: ' : mode === 'assistant' ? 'Assistant: ' : mode === 'academicWriter' ? 'Academic Writer: ' : mode === 'simplify' ? 'Simplify: ' : mode === 'counselor' ? 'Counselor: ' : mode === 'storytelling' ? 'The Story Teller: ' : mode === 'coding' ? 'Coding Guru: ' : mode === 'companion' ? 'Friend: ' : 'AI Personality: '}
-      {message.content}
-      {message.role === 'DALL-E' && (
-        <img src={message.image} alt="Generated Image" style={{ maxWidth: '80%', height: 'auto' }} />
-      )}
-    </div>
-  ))}
-</div>
+<div
+  className={styles.result}
+  dangerouslySetInnerHTML={{ __html: result || "Generated response will appear here..." }}
+
+
+  
+/>
 
 
 <Analytics />

@@ -47,7 +47,7 @@ export default function VisionPage() {
           placeholder="What’s in this image?" 
           className={styles.inputText}
         />
-        <button type="submit" className={styles.submitButton}>Ask GPT-4</button>
+        <button type="submit" className={styles.submitButton}>Generate</button>
       </form>
       {response && <div className={styles.result}><strong>Response:</strong> {response}</div>}
     </div>

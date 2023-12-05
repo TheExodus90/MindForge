@@ -9,6 +9,8 @@ export default async function handler(req, res) {
         const payload = {
           model: "gpt-4-vision-preview",
           messages: [
+            {"role": "system", "content": "Assist me as an engineers AI assistant. Provide detailed explanations, calculations, and suggestions related to engineering tasks. You can help with problem-solving, drafting technical documents, explaining concepts, and more. Please respond in a clear and concise manner."
+            },
             {
               "role": "user",
               "content": [
@@ -17,7 +19,7 @@ export default async function handler(req, res) {
               ]
             }
           ],
-          max_tokens: 300
+          max_tokens: 2000
         };
   
         const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
