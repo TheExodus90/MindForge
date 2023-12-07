@@ -62,7 +62,7 @@
   padding: 10px;
   border-radius: 10px;
   width: 65%;
-  min-height: 500px;
+  min-height: 600px;
   max-width: 100%; /* Responsive max-width */
   color: #3f3c3c; /* Light color for text */
 }

@@ -11,12 +11,14 @@ import { v4 as uuidv4 } from 'uuid';
 import Footer from '../components/footer';
 
 
-async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse) {
+async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse, role) {
   const currentTime = new Date().toISOString();
+  // Use a generated UUID for anonymous users
   const anonymousUserId = uuidv4();
   const chatHistory = {
     user_id: userId === 'anonymous' ? anonymousUserId : userId,
     conversation_id: conversationId,
+    role, // Add the role here (e.g., 'user' or 'ChatGPT')
     text: JSON.stringify({ userMessage, chatGptResponse }),
     created_at: currentTime
   };
@@ -58,10 +60,6 @@ const inputRef = useRef(null);
   const [selectedModel, setSelectedModel] = useState("GPT-3.5 Turbo");
   const [showAvatars, setShowAvatars] = useState(false); // State to track avatar display
   const [chatHistory, setChatHistory] = useState([]);
-  const [showLanguageInputs, setShowLanguageInputs] = useState(false);
-  const [translateFrom, setTranslateFrom] = useState('');
-  const [translateTo, setTranslateTo] = useState('');
-
 
   const toggleNightMode = () => {
     setIsNightMode(!isNightMode);
@@ -149,11 +147,6 @@ useEffect(() => {
   }
 }, [session]); // Depend on session state
 
-useEffect(() => {
-  setShowLanguageInputs(selectedModel === "Translation");
-}, [selectedModel]);
-
-
 
 useEffect(() => {
  
@@ -179,178 +172,94 @@ async function insertInteraction(userId, conversationId, text) {
 
     return true;
 }
-const onSubmit = async (e) => { if (e && e.preventDefault && typeof e.preventDefault === 'function'){
-  e.preventDefault();
-  setIsLoading(true);
 
-  let textForTTS = ""; // Declare textForTTS at the beginning of the function
+const onSubmit = async (e) => {
+  if (e && e.preventDefault && typeof e.preventDefault === 'function'){
+    e.preventDefault();
+    setIsLoading(true);
 
-  let requestBody;
-  if (selectedModel === "Translation") {
-    requestBody = JSON.stringify({ 
-      prompt: promptInput, 
-      mode: "Translation", 
-      translateFrom, 
-      translateTo 
-    });
-  } else {
-    // Existing requestBody for other models
-    requestBody = JSON.stringify({ prompt: promptInput, mode: mode });
-  }
-  
+    let textForTTS = ""; 
 
-
-
-  if (!session && !checkMessageCount()) {
-    return; // Early return if message limit is reached
-  }
-  
+    if (!session && !checkMessageCount()) {
+      return; 
+    }
+    
     const userInputTokens = Math.ceil(promptInput.length / 4);
     let newTotalTokens = totalTokens + userInputTokens;
     let newMessageHistory = [...messageHistory, {role: 'user', content: promptInput}];
     
-  
     while (newTotalTokens > (4096 - avgModelResponseTokens)) {
       const removedMessage = newMessageHistory.shift();
       const removedTokens = Math.ceil(removedMessage.content.length / 4);
       newTotalTokens -= removedTokens;
     }
 
-    // If an anonymous user sends a message, increment the message count
     if (!session) {
       const key = 'anonymousMessageCount';
       let messageCount = parseInt(localStorage.getItem(key) || '0', 10);
       localStorage.setItem(key, (messageCount + 1).toString());
-      updateRemainingMessages(); // Make sure this is called right after updating localStorage
+      updateRemainingMessages();
     }
   
-    // Update state
     setTotalTokens(newTotalTokens);
     setMessageHistory(newMessageHistory);
       
-    e.preventDefault();
-    setIsLoading(true); 
+    let responseData;
+    let requestBody;
+    let apiEndpoint = '/api/generate'; 
 
-    let responseData; // Define responseData outside the try-catch block
+    if (selectedModel === "Translation") {
+      requestBody = JSON.stringify({ 
+        prompt: promptInput, 
+        mode: "Translation", 
+        translateFrom, 
+        translateTo 
+      });
+    } else {
+      requestBody = JSON.stringify({ prompt: promptInput, mode: mode });
+    }
 
     try {
       if (inputRef.current) inputRef.current.focus();
-    if (count == 50) {
-        return console.log("you have reached your limit");
+
+      const response = await fetch(apiEndpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      });
+
+      const data = await response.json();
+      responseData = data; 
+
+      if (selectedModel === "GPT-3.5 Turbo" || selectedModel === "Translation") {
+        const chatGptResponse = data.result.trim();
+        const newMessage = { role: 'user', content: promptInput };
+        const newResponse = { role: 'ChatGPT', content: chatGptResponse };
+        setChatHistory((prevHistory) => [...prevHistory, newMessage, newResponse]);
+        textForTTS = chatGptResponse;
+        await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, chatGptResponse, 'user');
+      } else if (selectedModel === "DALL-E-3") {
+        // Processing for DALL-E-3
+        // ...
       }
 
-     // Define the apiEndpoint variable based on the selected model
-  let apiEndpoint = '';
-  if (selectedModel === "GPT-3.5 Turbo") {
-    apiEndpoint = "/api/generate";
-  } else if (selectedModel === "DALL-E-3") {
-    apiEndpoint = "/api/dalleGen";
-    console.log("DALL-E API response:", responseData);
-    
-  } else {
-    // Handle other cases or set a default endpoint if needed
-  }
+      const conversationId = uuidv4();
+      await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, textForTTS);
 
-  try {
-    
-   
-    const response = await fetch('/api/generate', {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: requestBody, // Use the requestBody here
-    });
+    } catch (error) {
+      console.error('Error during API call:', error);
+    } finally {
+      setIsLoading(false);
+    }
 
-    const data = await response.json();
-    responseData = data; // Assign the response data to responseData
-    console.log("API response data:", data);
+    // Text-to-Speech functionality
+    // ...
 
-   // After receiving a response from the AI model
-if (selectedModel === "GPT-3.5 Turbo") {
-  const chatGptResponse = data.result.trim();
-  const newMessage = { role: 'user', content: promptInput };
-  const newResponse = { role: 'ChatGPT', content: chatGptResponse };
-  setChatHistory((prevHistory) => [...prevHistory, newMessage, newResponse]);
-  textForTTS = chatGptResponse;
-  await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, chatGptResponse, 'user');
-} else if (selectedModel === "Translation") {
-  // Assuming 'data.result' contains the translated text
-  const translationResponse = data.result;
-  const newMessage = { role: 'user', content: promptInput };
-  const newResponse = { role: 'Translation', content: translationResponse };
-  setChatHistory((prevHistory) => [...prevHistory, newMessage, newResponse]);
-  textForTTS = translationResponse;
-  await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, translationResponse, 'user');
-} else if (selectedModel === "DALL-E-3") {
-  // Make sure to point to your specific DALL-E API endpoint
-  const dalleResponse = await fetch('/api/dalleGen', {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ prompt: promptInput }) // Adjust the request body as per your dalle.js endpoint's requirements
-  });
-
-  const dalleData = await dalleResponse.json();
-  console.log("DALL-E API response data:", dalleData);
-
-  if (dalleData && dalleData.data && dalleData.data.length > 0) {
-    const revisedPrompt = dalleData.data[0].revised_prompt;
-    const imageUrl = dalleData.data[0].url;
-    const newMessage = { role: 'user', content: promptInput };
-    const newResponse = { role: 'DALL-E', content: revisedPrompt, image: imageUrl };
-    setChatHistory((prevHistory) => [...prevHistory, newMessage, newResponse]);
-    // The uploadChatHistory may need adjustment based on whether you want to store image URLs in your database
-    await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, revisedPrompt, 'user');
   }
 }
 
-      // Generate a UUID for conversationId and update DB
-      const conversationId = uuidv4();
-    
-    await uploadChatHistory(session ? session.user.id : 'anonymous', conversationId, promptInput, textForTTS);
-
-    
-  } catch (error) {
-    console.error('Error during API call:', error);
-  } finally {
-    setIsLoading(false);
-  }
-
-
-
-    
-  if (textForTTS && voice !== 'disabled') {  // Check if textForTTS is not empty and voice is not disabled
-    const ttsEndpoint = ttsProvider === "ElevenLabs" ? "/api/elevenLabs" : "/api/googleTTS";
-    const voiceParam = ttsProvider === "GoogleTTS" ? (voice === "female" ? "en-GB-News-H" : "en-US-Wavenet-D") : (voice === "female" ? "female" : "male");
-  
-    const audioResponse = await fetch(ttsEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ text: textForTTS, voice: voiceParam }),
-    });
-
-    if (audioResponse.ok) {
-      const audioBlob = await audioResponse.blob();
-      const audioUrl = URL.createObjectURL(audioBlob);
-      const audio = new Audio(audioUrl);
-      audio.play();
-    } else {
-      console.error("Error fetching audio:", await audioResponse.text());
-      alert("An error occurred while fetching audio.");
-    }
-  }
-    
-    } catch (error) {
-      console.error(error);
-      alert(error.message);
-    } finally {
-      setIsLoading(false); 
-    }
-  }}
 
   
 
@@ -503,7 +412,6 @@ useEffect(() => {
          <label htmlFor="modelSelection">Select Model: </label>
           <select name="modelSelection" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
           <option value="GPT-3.5 Turbo">GPT-3.5 Turbo</option>
-          <option value="Translation">Translation</option>
           <option value="DALL-E-3">DALL-E-3 (Image Generation)</option>
           {/* Add more models as they become available */}
          </select>
@@ -517,14 +425,6 @@ useEffect(() => {
             <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
             </select>
           </div>
-
-          {showLanguageInputs && (
-         <div>
-          <input type="text" placeholder="Translate from..." value={translateFrom} onChange={e => setTranslateFrom(e.target.value)} />
-          <input type="text" placeholder="Translate to..." value={translateTo} onChange={e => setTranslateTo(e.target.value)} />
-          </div>
-      )}
-
 
          
           {/* Conditional rendering based on selectedModel */}

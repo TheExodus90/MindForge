@@ -1,34 +1,38 @@
+
   import * as dotenv from 'dotenv';
-  import { Configuration, OpenAIApi } from 'openai';
+import { Configuration, OpenAIApi } from 'openai';
 
-  dotenv.config({ path: __dirname + '/.env' });
+dotenv.config({ path: __dirname + '/.env' });
 
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+const openai = new OpenAIApi(configuration);
+
+export default async function (req, res) {
+  const prompt = req.body.prompt || '';
+  const mode = req.body.mode || "expert";
+  const translateFrom = req.body.translateFrom;
+  const translateTo = req.body.translateTo;
+  let systemMessage = "";
+
+  console.log("Received mode:", mode);
+  console.log("Received request body:", req.body);
+
+  if (prompt.trim().length === 0) {
+    res.status(400).json({
+      error: {
+        message: "Prompt is empty...",
+      },
+    });
+    return;
+  }
 
   const messageHistory = [];
 
-  export default async function (req, res) {
-    const prompt = req.body.prompt || '';
-    const mode = req.body.mode || "expert";
-    let systemMessage = "";
-
-    console.log("Received mode:", req.body.mode);
-  console.log("Received request body:", req.body);
-
-    if (prompt.trim().length === 0) {
-      res.status(400).json({
-        error: {
-          message: "Prompt is empty...",
-        },
-      });
-      return;
-    }
-
-    messageHistory.push({ role: 'user', content: prompt });
-
+  if (mode === "Translation" && translateFrom && translateTo) {
+    systemMessage = `Translate the following text from ${translateFrom} to ${translateTo}: ${prompt}`;
+  } else {
     switch (mode) {
       case "genie":
         systemMessage = "You are a magical genie who can answer questions with a touch of mystique and wisdom and helpfulness. Be concise and Ensure all responses are complete and never say 'as an AI language model'.";
@@ -60,58 +64,34 @@
         break;
         default:
         systemMessage = "You are an incredibly intelligent and helpful office assistant. Ensure all responses are complete and never say 'as an AI language model'.";
-
-             
-    }
-
-    
-
-    messageHistory.push({ role: 'system', content: systemMessage });
-
-
-    try {
-      const response = await openai.createChatCompletion({
-        model: "gpt-3.5-turbo-16k",
-        messages: messageHistory,
-        temperature: 0.8,
-        max_tokens: 300,
-      });
-
-      const assistantMessage = response.data.choices[0].message.content;
-      messageHistory.push({ role: 'assistant', content: assistantMessage });
-      res.status(200).json({ result: assistantMessage });
-    } catch (error) {
-      if (error.response) {
-        console.error(error.response.status, error.response.data);
-        res.status(error.response.status).json(error.response.data);
-      } else {
-        console.error(`Error with OpenAI API request: ${error.message}`);
-        res.status(500).json({
-          error: {
-            message: 'An error occurred during your request',
-          },
-        });
-
-        try {
-          const result = await openai.complete({
-            prompt: prompt,
-            maxTokens: 60,
-            temperature: 0.7,
-            topP: 1,
-            frequencyPenalty: 0,
-            presencePenalty: 0,
-          });
-      
-          res.status(200).json({
-            result: result.data.choices[0].text,
-            tokens: result.data.usage.total_tokens, // Return the number of tokens used
-          });
-        } catch (error) {
-          console.error(error);
-          res.status(500).json({ error: error.toString() });
-        }
-      
-
-      }
     }
   }
+
+  messageHistory.push({ role: 'system', content: systemMessage });
+  messageHistory.push({ role: 'user', content: prompt });
+
+  try {
+    const response = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo-16k",
+      messages: messageHistory,
+      temperature: 0.8,
+      max_tokens: 300,
+    });
+
+    const assistantMessage = response.data.choices[0].message.content;
+    messageHistory.push({ role: 'assistant', content: assistantMessage });
+    res.status(200).json({ result: assistantMessage });
+  } catch (error) {
+    if (error.response) {
+      console.error(error.response.status, error.response.data);
+      res.status(error.response.status).json(error.response.data);
+    } else {
+      console.error(`Error with OpenAI API request: ${error.message}`);
+      res.status(500).json({
+        error: {
+          message: 'An error occurred during your request',
+        },
+      });
+    }
+  }
+}
