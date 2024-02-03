@@ -91,13 +91,12 @@
 
 /* Styling for the Night Mode Toggle Switch */
 .nightModeToggle {
-  position: fixed; /* Fixed position */
-  top: 10px; /* Distance from top */
-  left: 10px; /* Distance from left */
+  
   margin-top: 10px;
   margin-bottom: 20px;
   display: flex;
   cursor: pointer;
+  padding: 10px; /* Add padding to create space around the toggle */
 }
 
 .nightModeToggle span {
@@ -430,3 +429,23 @@
   border: 2px solid #098f41; /* White border to highlight the selected character */
   border-radius: 3px;
 }
+
+.sidebar div {
+  margin-bottom: 10px; /* Create space between items */
+}
+
+/* Sidebar.module.css */
+.sidebar {
+  width: 200px;
+  background-color: rgba(0, 0, 0, 0.5); /* Transparent grey background */
+  color: #fff;
+  padding: 20px;
+  height: 100vh; /* Full viewport height */
+  position: fixed; /* Fixed position */
+  top: 0; /* Align to the top */
+  left: 0; /* Align to the left */
+  overflow-y: auto; /* Enable scrolling if content overflows */
+  border-radius: 5px;
+}
+
+

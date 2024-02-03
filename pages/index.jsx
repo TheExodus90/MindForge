@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient'; // Make sure to import your initialized Supabase client
 import { v4 as uuidv4 } from 'uuid';
 import Footer from '../components/footer';
+import Sidebar from '../components/sidebar'; // Import the Sidebar component
 
 
 async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse) {
@@ -51,7 +52,7 @@ const inputRef = useRef(null);
   const avgModelResponseTokens = 260; // You might want to adjust this based on your specific use case
   const router = useRouter();
   const { session, signOut } = useAuth();
-  const [remainingMessages, setRemainingMessages] = useState(5);
+  const [remainingMessages, setRemainingMessages] = useState(7);
   const [userMessage, setUserMessage] = useState("");
   const prevModeRef = useRef(mode);
   const [isNightMode, setIsNightMode] = useState(true); // new state for night mode
@@ -61,11 +62,9 @@ const inputRef = useRef(null);
   const [showLanguageInputs, setShowLanguageInputs] = useState(false);
   const [translateFrom, setTranslateFrom] = useState('');
   const [translateTo, setTranslateTo] = useState('');
+  
 
 
-  const toggleNightMode = () => {
-    setIsNightMode(!isNightMode);
-  };
 
 
   
@@ -91,7 +90,7 @@ const updateRemainingMessages = () => {
   if (isNaN(messageCount)) {
     messageCount = 0; // Default to 0 if parsing failed
   }
-  setRemainingMessages(5 - messageCount);
+  setRemainingMessages(7 - messageCount);
 };
 
 
@@ -102,9 +101,9 @@ const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
   const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
   let messageCount = parseInt(storedMessageCount, 10);
-  let remaining = 5 - messageCount;
+  let remaining = 7 - messageCount;
   setRemainingMessages(remaining);
-  if (messageCount >= 5 || remaining < 0) {
+  if (messageCount >= 7 || remaining < 0) {
     setUserMessage("You have reached the free usage limit, please log-in or sign up for a free account to increase your usage limit ");
     return false;
   }
@@ -124,7 +123,9 @@ const resetChat = () => {
   // Add any additional state resets here as needed
 };
 
-
+const toggleNightMode = () => {
+  setIsNightMode(!isNightMode);
+};
 
 
 
@@ -134,7 +135,7 @@ useEffect(() => {
   if (session) {
     // Reset user message count
     localStorage.setItem('userMessageCount', '0');
-    setRemainingMessages(5);
+    setRemainingMessages(7);
   } else {
     // Handle anonymous user logic
     initializeAnonymousSession();
@@ -377,16 +378,27 @@ useEffect(() => {
 
   return (
     <div className={isNightMode ? styles.nightMode : styles.dayMode}> {/* Toggle class based on state */}
+    <Sidebar
+    isNightMode={isNightMode}
+    toggleNightMode={toggleNightMode}
+    voice={voice}
+    setVoice={setVoice}
+    showAvatars={showAvatars}
+    setShowAvatars={setShowAvatars}
+    selectedModel={selectedModel}
+    setSelectedModel={setSelectedModel}
+    ttsProvider={ttsProvider}
+    setTtsProvider={setTtsProvider}
+    showLanguageInputs={showLanguageInputs}
+    translateFrom={translateFrom}
+    setTranslateFrom={setTranslateFrom}
+    translateTo={translateTo}
+    setTranslateTo={setTranslateTo}
+    mode={mode}
+    setMode={setMode}
+/>
+ 
     
-    <div className={styles.nightModeToggle}>
-          <span onClick={toggleNightMode}>
-            {isNightMode ? (
-              <span>🌙</span> // Moon symbol for night mode
-            ) : (
-              <span>☀️</span> // Sun symbol for day mode
-            )}
-            </span>
-          </div>
 
     
     
