@@ -404,6 +404,8 @@ useEffect(() => {
         <meta name="twitter:description" content="The Utlimate AI Experience, MindForge by ExoFi Labs" />
         <meta name="twitter:image" content="public\imageresources\logo-black.png" />
         <link rel="icon" href="/favicon.ico" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6135280913884215"
+     crossorigin="anonymous"></script>
       </Head>
       <main className={styles.main}>
         <h1>Mind Forge by ExoFi Labs</h1>
