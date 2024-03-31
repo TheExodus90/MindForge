@@ -91,7 +91,7 @@ const updateRemainingMessages = () => {
   if (isNaN(messageCount)) {
     messageCount = 0; // Default to 0 if parsing failed
   }
-  setRemainingMessages(5 - messageCount);
+  setRemainingMessages(7 - messageCount);
 };
 
 
@@ -102,9 +102,9 @@ const checkMessageCount = () => {
   if (session) return true; // Skip check for signed-in users
   const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
   let messageCount = parseInt(storedMessageCount, 10);
-  let remaining = 5 - messageCount;
+  let remaining = 7 - messageCount;
   setRemainingMessages(remaining);
-  if (messageCount >= 5 || remaining < 0) {
+  if (messageCount >= 7 || remaining < 0) {
     setUserMessage("You have reached the free usage limit, please log-in or sign up for a free account to increase your usage limit ");
     return false;
   }
@@ -134,7 +134,7 @@ useEffect(() => {
   if (session) {
     // Reset user message count
     localStorage.setItem('userMessageCount', '0');
-    setRemainingMessages(5);
+    setRemainingMessages(7);
   } else {
     // Handle anonymous user logic
     initializeAnonymousSession();

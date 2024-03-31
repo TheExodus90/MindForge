@@ -22,8 +22,8 @@
 /* Day Mode styles */
 .dayMode {
   font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
-  background: linear-gradient(135deg, #70b167, #88ceab, #a4c9b3); /* Lighter gradient for day mode */
-  color: #1d1818; /* Darker text color for better readability */
+  background: linear-gradient(135deg, #f8f7f79f, #9c9b9b88); /* Updated gradient with greys and whites */
+  color: #333; /* Dark grey text color for better readability */
   line-height: 24px;
   animation: gradient 10s ease infinite;
   /* ... [other day mode specific styles, lighter versions of night mode styles] */
