@@ -61,12 +61,74 @@ const inputRef = useRef(null);
   const [showLanguageInputs, setShowLanguageInputs] = useState(false);
   const [translateFrom, setTranslateFrom] = useState('');
   const [translateTo, setTranslateTo] = useState('');
+  
+
+
+  const [audioData, setAudioData] = useState(null); // State to store captured audio data
+
+  useEffect(() => {
+    // Request microphone permission when the component mounts
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true })
+        .then(function(stream) {
+          console.log('Microphone access granted');
+        })
+        .catch(function(error) {
+          console.error('Error accessing microphone:', error);
+          // Handle errors, such as permission denied or unsupported browser
+        });
+    } else {
+      console.error('getUserMedia is not supported in this browser');
+    }
+  }, []);
 
 
   const toggleNightMode = () => {
     setIsNightMode(!isNightMode);
   };
 
+  // Function to capture user's voice input
+  const captureVoiceInput = () => {
+    if ('webkitSpeechRecognition' in window) {
+      const recognition = new window.webkitSpeechRecognition();
+      recognition.lang = 'en-US';
+  
+      recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('Transcript:', transcript);
+        setAudioData(transcript);
+      };
+  
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        // Handle error appropriately, such as showing a message to the user
+      };
+  
+      recognition.start();
+    } else {
+      console.error('Web Speech API not supported in this browser.');
+      // Handle lack of support, such as showing a message to the user
+    }
+  };
+  
+
+  // Function to send captured audio data to API route
+  const sendAudioData = async () => {
+    try {
+      const response = await fetch("/api/speechToText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ file: audioData }), // Send captured audio data to API route
+      });
+      const data = await response.json();
+      console.log("API Response:", data);
+      // Handle API response as needed
+    } catch (error) {
+      console.error("Error sending audio data:", error);
+    }
+  };
 
   
   const initializeAnonymousSession = () => {
@@ -539,6 +601,15 @@ useEffect(() => {
           
           <div className={styles.characterAvatarContainer}>
 
+<div className={styles.container}>
+      {/* Add a button to trigger voice input */}
+      <button onClick={captureVoiceInput}>Start Voice Input</button>
+      {/* Add a button to send captured audio data */}
+      <button onClick={sendAudioData}>Send Audio Data</button>
+      {/* Display captured audio data */}
+      {audioData && <div>Captured Audio: {audioData}</div>}
+    </div>
+
 
 <div className={`${styles.shadowBox} ${mode === 'assistant' ? styles.selected : ''}`} onClick={() => setMode('assistant')}>
     {showAvatars && <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={styles.characterAvatarImage} />}
@@ -687,9 +758,15 @@ useEffect(() => {
       {message.role === 'DALL-E' && (
         <img src={message.image} alt="Generated Image" style={{ maxWidth: '80%', height: 'auto' }} />
       )}
+
+      
     </div>
+
+
+
   ))}
 </div>
+
 
 
 <Analytics />

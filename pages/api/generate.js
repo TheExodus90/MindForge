@@ -30,6 +30,8 @@ export default async function (req, res) {
     return;
   }
 
+  
+
   if (mode === "Translation" && translateFrom && translateTo) {
     systemMessage = `Translate the following text from ${translateFrom} to ${translateTo}: ${prompt}`;
   } else {

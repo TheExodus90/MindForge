@@ -430,3 +430,21 @@
   border: 2px solid #098f41; /* White border to highlight the selected character */
   border-radius: 3px;
 }
+
+/* Add styles for chat bubbles */
+.userMessage {
+  background-color: #0f8e6c;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  max-width: 70%;
+}
+
+.chatGptMessage {
+  background-color: #4242e4;
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  max-width: 70%;
+  align-self: flex-end;
+}
