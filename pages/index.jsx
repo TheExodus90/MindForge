@@ -575,6 +575,11 @@ useEffect(() => {
     <span>Friend</span>
   </div>
 
+  <div className={`${styles.shadowBox} ${mode === 'MALINA' ? styles.selected : ''}`} onClick={() => setMode('MALINA')}>
+    {showAvatars && <img src="/pixel_characterAvatars/MALINA.png" alt="MALINA" className={styles.characterAvatarImage} />}
+    <span>MALINA</span>
+  </div>
+
   {/*<div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
     {showAvatars && <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />}
     <span>5H0D4N</span>
@@ -682,7 +687,7 @@ useEffect(() => {
   {chatHistory.map((message, index) => (
     <div key={index} className={message.role === 'user' ? styles.userMessage : styles.chatGptMessage}>
       
-      {message.role === 'user' ? 'You: ' : mode === 'assistant' ? 'Assistant: ' : mode === 'academicWriter' ? 'Academic Writer: ' : mode === 'simplify' ? 'Simplify: ' : mode === 'counselor' ? 'Counselor: ' : mode === 'storytelling' ? 'The Story Teller: ' : mode === 'coding' ? 'Coding Guru: ' : mode === 'companion' ? 'Friend: ' : 'AI Personality: '}
+      {message.role === 'user' ? 'You: ' : mode === 'assistant' ? 'Assistant: ' : mode === 'academicWriter' ? 'Academic Writer: ' : mode === 'simplify' ? 'Simplify: ' : mode === 'counselor' ? 'Counselor: ' : mode === 'storytelling' ? 'The Story Teller: ' : mode === 'coding' ? 'Coding Guru: ' : mode === 'companion' ? 'Friend: ' : 'AI Personality: ' ? 'MALINA: ' : mode === 'MALINA'}
       {message.content}
       {message.role === 'DALL-E' && (
         <img src={message.image} alt="Generated Image" style={{ maxWidth: '80%', height: 'auto' }} />
