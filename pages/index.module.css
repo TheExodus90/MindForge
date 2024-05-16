@@ -131,13 +131,19 @@
   background-size: cover;
   animation: gradient 10s ease infinite;
   color: #d8d8d8;
-  line-height: 24px;
   min-height: 100vh;
+  display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   text-align: center;
 }
 
+.text-container {
+  max-width: 800px; /* Adjust the value as per your preference */
+  width: 80%; /* Adjust as needed */
+  margin: 0 auto; /* Center the container horizontally */
+}
 /* Main container styling */
 .main {
   display: flex;
