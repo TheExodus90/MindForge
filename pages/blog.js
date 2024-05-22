@@ -9,7 +9,7 @@ const Blog = () => {
       id: 1,
       //title: 'Introducing Mind Forge: Your Ultimate AI Companion',
       author: 'ExoFi Labs Team',
-      date: 'May 1, 2024',
+      date: 'May 22, 2024',
       content: `
         <h2>Introducing Mind Forge: Your Ultimate AI Companion</h2>
         <p>Welcome to Mind Forge, the latest innovation from ExoFi Labs that's set to revolutionize the way you interact with AI. Mind Forge is more than just a chatbot—it's your ultimate AI companion, designed to assist you in various tasks, provide insightful conversations, and even engage in creative endeavors.</p>
