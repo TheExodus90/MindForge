@@ -7,7 +7,7 @@ const Blog = () => {
   const blogPosts = [
     {
       id: 1,
-      title: 'Introducing Mind Forge: Your Ultimate AI Companion',
+      //title: 'Introducing Mind Forge: Your Ultimate AI Companion',
       author: 'ExoFi Labs Team',
       date: 'May 1, 2024',
       content: `
