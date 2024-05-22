@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from "./index.module.css";
+import Footer from 'components/footer'; // Import the Footer component
 
 const TermsOfService = () => {
   return (
@@ -32,13 +33,10 @@ const TermsOfService = () => {
 
       <h2>6. Termination of Services</h2>
       <p>
-        - We may terminate or suspend your access to our services at our discretion, without prior notice, for violations of these Terms of Service.
+        - We may terminate or suspend your access to our services at our discretion, without prior notice, for violations of these Terms of Service or in breach of local laws.
       </p>
 
-      <h2>7. Governing Law</h2>
-      <p>
-        - These Terms of Service are governed by and construed in accordance with the laws of Your Jurisdiction.
-      </p>
+           <Footer /> {/* Add the Footer component here */}
     </div>
   );
 };

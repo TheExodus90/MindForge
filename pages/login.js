@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import styles from "./index.module.css";
 import { useAuth } from '../context/authContext'; // Make sure this path is correct
 import { createClient } from '@supabase/supabase-js';
+import Footer from 'components/footer'; // Import the Footer component
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -75,6 +76,7 @@ function LoginPage() {
 
                     </div>
                      </div>
+                     <Footer /> {/* Add the Footer component here */}
                      </div>
     );
 }

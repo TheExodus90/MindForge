@@ -1,5 +1,6 @@
 import React from 'react';
 import styles from 'pages/index.module.css';
+import Footer from 'components/footer'; // Import the Footer component
 
 const PrivacyPolicy = () => {
   return (
@@ -179,7 +180,13 @@ const PrivacyPolicy = () => {
           <li>By email: support@exofi.io</li>
         </ul>
       </div>
+      <Footer /> {/* Add the Footer component here */}
+      
     </div>
+
+
+
+    
   );
 };
 

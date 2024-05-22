@@ -14,12 +14,18 @@ function Footer() {
                     <Link href="/terms">
                         Terms of Service
                     </Link>
+                    <Link href="/blog"> {/* Added link to the blog */}
+                        Blog
+                    </Link>
                     <a href={`mailto:${supportEmail}`}>
                         Contact
                     </a>
                     <a href="https://twitter.com/ExofiLabs" target="_blank" rel="noopener noreferrer">
                         X
                     </a>
+                    <Link href="/"> {/* Added link to the Home Page */}
+                        Home
+                    </Link>
                 </div>
                 <div className={styles.copyRight}>
                     <p>© {new Date().getFullYear()} ExoFi Labs. Made by ExoFi. All rights reserved.</p>
