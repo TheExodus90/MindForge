@@ -382,7 +382,7 @@ font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
 }
 
 .userMessageStyle {
-  color: #247033;
+  color: #dfdfdf;
   justify-content: center;
   align-items: center;
   max-width: 40%;
@@ -391,7 +391,7 @@ font-family: 'Lexend', "Helvetica Neue", Arial, sans-serif;
 }
 
 .bodyText {
-  color: #247033;
+  color: #dfdfdf;
   justify-content: center;
   align-items: center;
   max-width: 80%;
