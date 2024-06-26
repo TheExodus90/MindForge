@@ -66,13 +66,12 @@ export default async function (req, res) {
     }
   }
 
-  // Reset conversation history if switching from Translation mode
-  if (mode !== "Translation") {
-    conversationHistory = [];
+  // Instead of resetting the history, append new mode instructions when changing mode
+  if (conversationHistory.length === 0 || conversationHistory[conversationHistory.length - 1].role === 'system' && conversationHistory[conversationHistory.length - 1].content !== systemMessage) {
+    conversationHistory.push({ role: 'system', content: systemMessage });
   }
 
-  // Push system message and user prompt to conversation history
-  conversationHistory.push({ role: 'system', content: systemMessage });
+  // Push user prompt to conversation history
   conversationHistory.push({ role: 'user', content: prompt });
 
   try {
