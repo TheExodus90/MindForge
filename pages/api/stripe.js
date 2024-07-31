@@ -1,42 +1,50 @@
-// pages/api/stripe.js
-import Stripe from 'stripe';
-import { NextApiRequest, NextApiResponse } from 'next';
+import { useState } from 'react';
+import { loadStripe } from '@stripe/stripe-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: '2020-08-27',
-});
+// Replace with your Stripe publishable key
+const stripePromise = loadStripe('your_publishable_key_here');
 
-export default async function handler(req, NextApiResponse) {
-  if (req.method === 'POST') {
-    try {
-      // Extract the necessary information from the request body
-      const { email, paymentMethodId } = req.body;
+export default function Subscribe() {
+  const [loading, setLoading] = useState(false);
 
-      // Create a new customer object
-      const customer = await stripe.customers.create({
-        email: email,
-        payment_method: paymentMethodId,
-        invoice_settings: {
-          default_payment_method: paymentMethodId,
-        },
-      });
+  const handleSubscribe = async (event) => {
+    event.preventDefault();
+    setLoading(true);
 
-      // Create the subscription
-      const subscription = await stripe.subscriptions.create({
-        customer: customer.id,
-        items: [{ plan: 'plan_id' }], // Replace 'plan_id' with your actual plan ID
-        expand: ['latest_invoice.payment_intent'],
-      });
+    // Create a Checkout Session on your server
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        // Add any necessary data for your subscription
+      }),
+    });
 
-      // Send back the subscription object
-      res.status(200).json(subscription);
-    } catch (error) {
-      // Handle errors properly
-      res.status(400).json({ statusCode: 400, message: error.message });
+    const session = await response.json();
+
+    // Redirect to Stripe Checkout
+    const stripe = await stripePromise;
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
+
+    if (result.error) {
+      console.error(result.error);
     }
-  } else {
-    // Handle any other HTTP methods
-    res.setHeader('Allow', 'POST');
-    res.status(405).end('Method Not Allowed');
-  }
+
+    setLoading(false);
+  };
+
+  return (
+    <div>
+      <h1>Subscribe to Our Service</h1>
+      <form onSubmit={handleSubscribe}>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Processing...' : 'Subscribe Now'}
+        </button>
+      </form>
+    </div>
+  );
 }

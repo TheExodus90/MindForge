@@ -1,92 +1,50 @@
 import { useState } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements
-} from '@stripe/react-stripe-js';
 
-// Load your Stripe publishable key from an environment variable or your config file
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
+// Replace with your Stripe publishable key
+const stripePromise = loadStripe('pk_live_51O90S9ClTxcM5vvLhW83pvFkxJHKxhSwO3lDOsA8Ekko8gRXK71iNmiwgKzG39aPxhfTdKACsFcPa2uPPATk0Q7h00oIuXrdeg');
 
-const CheckoutForm = () => {
-  const stripe = useStripe();
-  const elements = useElements();
+export default function Subscribe() {
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState(null);
 
-  const handleSubmit = async (event) => {
+  const handleSubscribe = async (event) => {
     event.preventDefault();
-
-    if (!stripe || !elements) {
-      // Stripe.js has not yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
-      return;
-    }
-
     setLoading(true);
-    setMessage(null);
 
-    const cardElement = elements.getElement(CardElement);
-
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
-      type: 'card',
-      card: cardElement,
+    // Create a Checkout Session on your server
+    const response = await fetch('/api/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        // Add any necessary data for your subscription
+      }),
     });
 
-    if (error) {
-      console.log('[error]', error);
-      setMessage(error.message);
-      setLoading(false);
-    } else {
-      console.log('[PaymentMethod]', paymentMethod);
+    const session = await response.json();
 
-      try {
-        const response = await fetch('/api/stripe', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: 'customer@example.com', // Replace with email input from user
-            paymentMethodId: paymentMethod.id,
-          }),
-        });
+    // Redirect to Stripe Checkout
+    const stripe = await stripePromise;
+    const result = await stripe.redirectToCheckout({
+      sessionId: session.id,
+    });
 
-        if (response.ok) {
-          const subscription = await response.json();
-          console.log('Subscription:', subscription);
-          setMessage('Payment successful! You are now subscribed.');
-        } else {
-          throw new Error('Network response was not ok.');
-        }
-      } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        setMessage('Payment failed: ' + error.message);
-      } finally {
-        setLoading(false);
-      }
+    if (result.error) {
+      console.error(result.error);
     }
+
+    setLoading(false);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CardElement />
-      <button type="submit" disabled={!stripe || loading}>
-        {loading ? "Processing..." : "Pay"}
-      </button>
-      {message && <div>{message}</div>}
-    </form>
+    <div>
+      <h1>Subscribe to Our Service</h1>
+      <form onSubmit={handleSubscribe}>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Processing...' : 'Subscribe Now'}
+        </button>
+      </form>
+    </div>
   );
-};
-
-const SubscriptionPage = () => {
-  return (
-    <Elements stripe={stripePromise}>
-      <CheckoutForm />
-    </Elements>
-  );
-};
-
-export default SubscriptionPage;
+}
