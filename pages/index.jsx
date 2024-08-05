@@ -1,14 +1,19 @@
+import { ChakraProvider, Box, VStack, Heading, Text, Container, Input, Button, Select, Radio, RadioGroup, Stack, FormControl, FormLabel, Switch, useColorMode, useColorModeValue, IconButton } from "@chakra-ui/react";
+import { SunIcon, MoonIcon } from "@chakra-ui/icons";
 import Head from "next/head";
-import { useState, useEffect, useRef } from "react";
+import Script from 'next/script';
+import { useState, useEffect, useRef, useCallback } from "react";
 import styles from "./index.module.css";
 import "isomorphic-fetch";
 import { Analytics } from '@vercel/analytics/react';
 import Link from 'next/link';
 import { useAuth } from '../context/authContext';
 import { useRouter } from 'next/router';
-import { supabase } from '../utils/supabaseClient'; // Make sure to import your initialized Supabase client
+import { supabase } from '../utils/supabaseClient';
 import { v4 as uuidv4 } from 'uuid';
-import Footer from '../components/footer';
+import dynamic from 'next/dynamic';
+
+const Footer = dynamic(() => import('../components/footer'), { ssr: false });
 
 
 async function uploadChatHistory(userId, conversationId, userMessage, chatGptResponse) {
@@ -61,69 +66,65 @@ const inputRef = useRef(null);
   const [showLanguageInputs, setShowLanguageInputs] = useState(false);
   const [translateFrom, setTranslateFrom] = useState('');
   const [translateTo, setTranslateTo] = useState('');
+  const { colorMode, toggleColorMode } = useColorMode();
+  const bgColor = useColorModeValue('white', 'gray.800');
+  const color = useColorModeValue('gray.800', 'white');
 
 
-  const toggleNightMode = () => {
-    setIsNightMode(!isNightMode);
-  };
-
-
-  
-  const initializeAnonymousSession = () => {
-    let session = localStorage.getItem('anonymousSession');
-    if (!session) {
-      session = uuidv4(); // Generate a unique session ID
-      localStorage.setItem('anonymousSession', session);
-      localStorage.setItem('anonymousMessageCount', '0');
-      // Initialize message count here
-      localStorage.setItem('anonymousMessageCount', '0');
+    
+  const initializeAnonymousSession = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      let session = localStorage.getItem('anonymousSession');
+      if (!session) {
+        session = uuidv4();
+        localStorage.setItem('anonymousSession', session);
+        localStorage.setItem('anonymousMessageCount', '0');
+      }
+      updateRemainingMessages();
     }
-    updateRemainingMessages(); // Update remaining messages based on the new or existing session
-  };
+  }, []);
 
-const updateRemainingMessages = () => {
-  let messageCount;
-  if (session) {
-    messageCount = parseInt(localStorage.getItem('userMessageCount') || '0', 10);
-  } else {
-    messageCount = parseInt(localStorage.getItem('anonymousMessageCount') || '0', 10);
-  }
-  if (isNaN(messageCount)) {
-    messageCount = 0; // Default to 0 if parsing failed
-  }
-  setRemainingMessages(7 - messageCount);
-};
-
-
-
-
-
-const checkMessageCount = () => {
-  if (session) return true; // Skip check for signed-in users
-  const storedMessageCount = session ? localStorage.getItem('userMessageCount') : localStorage.getItem('anonymousMessageCount');
-  let messageCount = parseInt(storedMessageCount, 10);
-  let remaining = 7 - messageCount;
-  setRemainingMessages(remaining);
-  if (messageCount >= 7 || remaining < 0) {
-    setUserMessage("You have reached the free usage limit, please log-in or sign up for a free account to increase your usage limit ");
-    return false;
-  }
-  return true;
-};
+  const updateRemainingMessages = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      let messageCount;
+      if (session) {
+        messageCount = parseInt(localStorage.getItem('userMessageCount') || '0', 10);
+      } else {
+        messageCount = parseInt(localStorage.getItem('anonymousMessageCount') || '0', 10);
+      }
+      if (isNaN(messageCount)) {
+        messageCount = 0;
+      }
+      const remaining = Math.max(0, 7 - messageCount);
+      setRemainingMessages(remaining);
+      localStorage.setItem('remainingMessages', remaining.toString());
+    }
+  }, [session]);
 
 
 
 
 
-// Add a new function to reset the chat
-const resetChat = () => {
-  setMessageHistory([]); // Clears the conversation history
-  setResult(''); // Clears the displayed results
-  setTotalTokens(0); // Resets the token count
-  setPromptInput(''); // Clears the prompt input
-  // Add any additional state resets here as needed
-};
+  const checkMessageCount = useCallback(() => {
+    if (session) return true;
+    const storedMessageCount = localStorage.getItem('anonymousMessageCount');
+    let messageCount = parseInt(storedMessageCount, 10);
+    let remaining = 7 - messageCount;
+    setRemainingMessages(remaining);
+    if (messageCount >= 7 || remaining < 0) {
+      setUserMessage("You have reached the free usage limit, please log-in or sign up for a free account to increase your usage limit ");
+      return false;
+    }
+    return true;
+  }, [session]);
 
+
+  const resetChat = useCallback(() => {
+    setMessageHistory([]);
+    setResult('');
+    setTotalTokens(0);
+    setPromptInput('');
+  }, []);
 
 
 
@@ -132,15 +133,13 @@ const resetChat = () => {
 
 useEffect(() => {
   if (session) {
-    // Reset user message count
     localStorage.setItem('userMessageCount', '0');
     setRemainingMessages(7);
   } else {
-    // Handle anonymous user logic
     initializeAnonymousSession();
     checkMessageCount();
   }
-}, [session]);
+}, [session, initializeAnonymousSession, checkMessageCount]);
 
 useEffect(() => {
   if (!session) {
@@ -156,12 +155,17 @@ useEffect(() => {
 
 
 useEffect(() => {
- 
   if (prevModeRef.current !== mode) {
     resetChat();
   }
-  prevModeRef.current = mode; // Update the ref to the current mode
-}, [mode]); // Re-run the effect if 'mode' changes
+  prevModeRef.current = mode;
+}, [mode, resetChat]);
+
+useEffect(() => {
+  setCharacterAvatar(`/characterAvatars/${mode}.png`);
+}, [mode]);
+
+
 
 
 // Function to insert interaction into the Supabase database
@@ -376,27 +380,23 @@ useEffect(() => {
   };
 
   return (
-    <div className={isNightMode ? styles.nightMode : styles.dayMode}> {/* Toggle class based on state */}
-    
-    <div className={styles.nightModeToggle}>
-          <span onClick={toggleNightMode}>
-            {isNightMode ? (
-              <span>🌙</span> // Moon symbol for night mode
-            ) : (
-              <span>☀️</span> // Sun symbol for day mode
-            )}
-            </span>
-          </div>
-
-    
-    
+    <Box bg={bgColor} color={color} minH="100vh">
+      <Box textAlign="right" p={4}>
+        <IconButton
+          icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
+          onClick={toggleColorMode}
+          isRound
+          size="lg"
+        />
+      </Box>
+  
       <Head>
         <title>ExoFi Labs</title>
         <meta name="description" content="MindForge, created by ExoFi Labs." />
         <meta name="keywords" content="ExoFi Labs, Mindforge, AI, Technology, TTS, text to speech, MindForge by ExoFi Labs, chatbot, RPG, AI Companion" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta property="og:title" content="MindForge by ExoFi Labs" />
-        <meta property="og:image" content="public\imageresources\MindForgeLogo.png" />
+        <meta property="og:image" content="public/imageresources/MindForgeLogo.png" />
         <meta property="og:url" content="https://www.exofi.app" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -405,310 +405,173 @@ useEffect(() => {
         <meta name="twitter:image" content="https://www.exofi.app/imageresources/hero1.png" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="canonical" href="https://www.exofi.app" />
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6135280913884215"
-     crossorigin="anonymous"></script>
       </Head>
-      <main className={styles.main}>
-        <h1>Mind Forge by ExoFi Labs</h1>
-
-      
+      <Script
+        async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6135280913884215"
+        strategy="afterInteractive"
+        crossOrigin="anonymous"
+      />
   
+      <Container maxW="container.lg" py={8}>
+        <Heading mb={6}>Mind Forge by ExoFi Labs</Heading>
+  
+        {session !== null ? (
+  <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
+    <Text>Welcome, {session.user.email}!</Text>
+    <Button onClick={handleLogout}>Logout</Button>
+  </Box>
+) : (
+  <Box mb={4}>
+    <Button as={Link} href="/login" mr={4}>Log In</Button>
+    <Button as={Link} href="/usersignup">Sign-Up</Button>
+  </Box>
+)}
 
-      {/* Conditional rendering based on session */}
-      {!session ? (
-          <div>
-          <a href="#" onClick={() => router.push('/login')} className={styles.customButton}>Log In </a>   
-          <a href="#" onClick={() => router.push('/usersignup')} className={styles.customButton}>Sign-Up</a>
-
-              </div>
-        ) : (
-          <div className={styles.welcomeLogoutContainer}>
-            <span>Welcome, {session.user.email}!</span> {/* Display the user's email or name */}
-            <button onClick={handleLogout}>Logout</button>
-          </div> 
-          
-            
-        )}
-
-        
-
-<div>  
-  {remainingMessages <= 0 ? (
-    <span className={styles.redText}>
-      You have {remainingMessages} free messages remaining. Sign up for a free account to increase usage limits.
-    </span>
+<Text mb={4}>
+  {typeof window !== 'undefined' && remainingMessages <= 0 ? (
+    <Text color="red">
+      You have 0 free messages remaining. Sign up for a free account to increase usage limits.
+    </Text>
   ) : (
-    <span className={styles.userMessageStyle}>
-      Usage limits depend on service demand. Please upgrade to increase usage limits. 
-    </span>
+    <Text>
+      Usage limits depend on service demand. Please upgrade to increase usage limits.
+    </Text>
   )}
-</div>
-
-<div className={styles.bodyText}> Welcome to MindForge by ExoFi Labs, a cutting-edge digital platform powered by ChatGPT. Our platform seamlessly integrates advanced AI communication with rapid voice synthesis capabilities from 11Labs and Google TTS, ensuring a dynamic and responsive experience. Please select an AI Personality to chat with below. <div>Update: DALLE-3 Now Available!</div></div>
-      
-      
+</Text>
   
-      
-        
+        <Text mb={4}>
+          Welcome to MindForge by ExoFi Labs, a cutting-edge digital platform powered by ChatGPT. Our platform seamlessly integrates advanced AI communication with rapid voice synthesis capabilities from 11Labs and Google TTS, ensuring a dynamic and responsive experience. Please select an AI Personality to chat with below. <div>Update: DALLE-3 Now Available!</div>
+        </Text>
+  
         <form onSubmit={onSubmit}>
-        <input
-  type="text"
-  name="prompt"
-  value={promptInput} // This is where the input value should be bound
-  onChange={(e) => setPromptInput(e.target.value)}
-  onKeyPress={(e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      onSubmit(e); // Call the onSubmit function directly
-    }
-  }}
-  placeholder="Send a message"/>
-
-            <div className={styles.buttonContainer}>
-              <input
+          <FormControl mb={4}>
+            <Input
+              ref={inputRef}
+              type="text"
+              name="prompt"
+              value={promptInput}
+              onChange={(e) => setPromptInput(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  onSubmit(e);
+                }
+              }}
+              placeholder="Send a message"
+            />
+          </FormControl>
+  
+          <Stack direction="row" spacing={4} mb={4}>
+            <Button
               type="submit"
-              className={remainingMessages <= 0 ? styles.redText : undefined}
-              value={isLoading ? "Loading..." : "Generate Response"}
+              isLoading={isLoading}
               disabled={isLoading || remainingMessages <= 0}
-            /> 
-            </div>
-
-                      
-            
-
-            <div className={styles.buttonContainer}>
-            <button type="button"
-            className={styles.resetButton} /* new class for reset button */
-          onClick={resetChat} >Reset</button>
-
-          </div>
-
-          
-
-            <div className={styles.modelSettings}>
-
-            
-
-          
-          <div>
-            <input type="radio" name="voice" value="female" checked={voice === 'female'} onChange={(e) => setVoice(e.target.value)} /> Female Voice
-            <input type="radio" name="voice" value="male" checked={voice === 'male'} onChange={(e) => setVoice(e.target.value)} /> Male Voice
-            <input type="radio" name="voice" value="disabled" checked={voice === 'disabled'} onChange={(e) => setVoice(e.target.value)} /> Disable Voice
-
-
-            <div><input type="checkbox" name="avatarDisplay" checked={showAvatars} onChange={(e) => setShowAvatars(e.target.checked)} />  Show Avatars </div>
-            
+            >
+              {isLoading ? "Loading..." : "Generate Response"}
+            </Button>
+            <Button type="button" onClick={resetChat}>
+              Reset
+            </Button>
+          </Stack>
   
-          </div>
-          
-
-           {/* Dropdown for model selection */}
-         <div>
-         <label htmlFor="modelSelection">Select Model: </label>
-          <select name="modelSelection" value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
-          <option value="GPT-3.5 Turbo">GPT-3.5 Turbo</option>
-          <option value="Translation">Translation</option>
-          <option value="DALL-E-3">DALL-E-3 (Image Generation)</option>
-          {/* Add more models as they become available */}
-         </select>
-         </div>
-
-         <div>
-            <label htmlFor="ttsProvider">TTS Provider: </label>
-            <select name="ttsProvider" value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
-            
-            <option value="GoogleTTS">Google TTS</option>
-            <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
-            </select>
-          </div>
-
+          <Box mb={4}>
+            <FormLabel>Voice:</FormLabel>
+            <RadioGroup onChange={setVoice} value={voice}>
+              <Stack direction="row">
+                <Radio value="female">Female Voice</Radio>
+                <Radio value="male">Male Voice</Radio>
+                <Radio value="disabled">Disable Voice</Radio>
+              </Stack>
+            </RadioGroup>
+          </Box>
+  
+          <Box mb={4}>
+            <Switch isChecked={showAvatars} onChange={(e) => setShowAvatars(e.target.checked)}>Show Avatars</Switch>
+          </Box>
+  
+          <Box mb={4}>
+            <FormLabel>Select Model:</FormLabel>
+            <Select value={selectedModel} onChange={(e) => setSelectedModel(e.target.value)}>
+              <option value="GPT-3.5 Turbo">GPT-3.5 Turbo</option>
+              <option value="Translation">Translation</option>
+              <option value="DALL-E-3">DALL-E-3 (Image Generation)</option>
+            </Select>
+          </Box>
+  
+          <Box mb={4}>
+            <FormLabel>TTS Provider:</FormLabel>
+            <Select value={ttsProvider} onChange={(e) => setTtsProvider(e.target.value)}>
+              <option value="GoogleTTS">Google TTS</option>
+              <option value="ElevenLabs" disabled>ElevenLabs (for Plus Users)</option>
+            </Select>
+          </Box>
+  
           {showLanguageInputs && (
-         <div>
-          <input type="text" placeholder="Translate from..." value={translateFrom} onChange={e => setTranslateFrom(e.target.value)} />
-          <input type="text" placeholder="Translate to..." value={translateTo} onChange={e => setTranslateTo(e.target.value)} />
-          </div>
-      )}
-
-
-         
-          {/* Conditional rendering based on selectedModel */}
-          {selectedModel === "GPT-3.5 Turbo" && (
-          <div>
-          {/* Render character avatars/personalities here */}
-          <label htmlFor="mode">Select an AI to Chat with: </label>
-          <div className={styles.characterAvatarContainer}>
-          {
-          
-          <div className={styles.characterAvatarContainer}>
-
-
-<div className={`${styles.shadowBox} ${mode === 'assistant' ? styles.selected : ''}`} onClick={() => setMode('assistant')}>
-    {showAvatars && <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" className={styles.characterAvatarImage} />}
-    <span>Assistant</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'academicWriter' ? styles.selected : ''}`} onClick={() => setMode('academicWriter')}>
-    {showAvatars && <img src="/pixel_characterAvatars/academicWriter.png" alt="academicWriter" className={styles.characterAvatarImage} />}
-    <span>Academic Writer</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'simplify' ? styles.selected : ''}`} onClick={() => setMode('simplify')}>
-    {showAvatars && <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" className={styles.characterAvatarImage} />}
-    <span>Simplify Anything</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'counselor' ? styles.selected : ''}`} onClick={() => setMode('counselor')}>
-    {showAvatars && <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" className={styles.characterAvatarImage} />}
-    <span>Counselor</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'storytelling' ? styles.selected : ''}`} onClick={() => setMode('storytelling')}>
-    {showAvatars && <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" className={styles.characterAvatarImage} />}
-    <span>The Story Teller</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'coding' ? styles.selected : ''}`} onClick={() => setMode('coding')}>
-    {showAvatars && <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" className={styles.characterAvatarImage} />}
-    <span>Coding Guru</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'companion' ? styles.selected : ''}`} onClick={() => setMode('companion')}>
-    {showAvatars && <img src="/pixel_characterAvatars/companion.png" alt="Companion" className={styles.characterAvatarImage} />}
-    <span>Friend</span>
-  </div>
-
-  <div className={`${styles.shadowBox} ${mode === 'MALINA' ? styles.selected : ''}`} onClick={() => setMode('MALINA')}>
-    {showAvatars && <img src="/pixel_characterAvatars/MALINA.png" alt="MALINA" className={styles.characterAvatarImage} />}
-    <span>MALINA</span>
-  </div>
-
-  {/*<div className={`${styles.shadowBox} ${mode === '5H0D4N' ? styles.selected : ''}`} onClick={() => setMode('5H0D4N')}>
-    {showAvatars && <img src="/pixel_characterAvatars/5H0D4N.png" alt="5H0D4N" className={styles.characterAvatarImage} />}
-    <span>5H0D4N</span>
-        </div>*/}
-
-
-
-
-
-{/*
-
-
-</div>
-
-  <label htmlFor="userAvatar">Your Avatar: </label>
-
-  <select name="userAvatar" value={userAvatar} onChange={(e) => setUserAvatar(e.target.value)}>
-    <option value="avatar1">Avatar 1</option>
-    <option value="avatar2">Avatar 2</option>
-    <option value="avatar3">Avatar 3</option>
-    <option value="avatar4">Avatar 4</option>
-  </select>
-
-  <div className={styles.avatarContainer}>
-    <label htmlFor="userAvatar1">
-      <input type="radio" id="userAvatar1" name="userAvatar" value="avatar1" checked={userAvatar === 'avatar1'} onChange={(e) => setUserAvatar(e.target.value)} />
-      <img src="/avatars/avatar1.png" alt="Avatar 1" className={`${styles.avatarImage} ${styles.avatarRoundedCorners}`} />
-      
-    </label>
-    <label htmlFor="userAvatar2">
-      <input type="radio" id="userAvatar2" name="userAvatar" value="avatar2" checked={userAvatar === 'avatar2'} onChange={(e) => setUserAvatar(e.target.value)} />
-      <img src="/avatars/avatar2.png" alt="Avatar 2" className={`${styles.avatarImage} ${styles.avatarRoundedCorners}`} />
-      
-    </label>
-    <label htmlFor="userAvatar3">
-      <input type="radio" id="userAvatar3" name="userAvatar" value="avatar3" checked={userAvatar === 'avatar3'} onChange={(e) => setUserAvatar(e.target.value)} />
-      <img src="/avatars/avatar3.png" alt="Avatar 3" className={`${styles.avatarImage} ${styles.avatarRoundedCorners}`} />
-      
-    </label>
-    <label htmlFor="userAvatar4">
-      <input type="radio" id="userAvatar4" name="userAvatar" value="avatar4" checked={userAvatar === 'avatar4'} onChange={(e) => setUserAvatar(e.target.value)} />
-      <img src="/avatars/avatar4.png" alt="Avatar 4" className={`${styles.avatarImage} ${styles.avatarRoundedCorners}`} />
-      
-    </label>
-  </div>
-
-  
-
-*/}
-
-
-    
-
-  </div>
-
-
-        
-          
-          }
-          </div>
-          </div>
+            <Stack spacing={4} mb={4}>
+              <Input type="text" placeholder="Translate from..." value={translateFrom} onChange={e => setTranslateFrom(e.target.value)} />
+              <Input type="text" placeholder="Translate to..." value={translateTo} onChange={e => setTranslateTo(e.target.value)} />
+            </Stack>
           )}
-
-
-
-          
-          
-          {/*<div>
-            <label htmlFor="mode">Personality: </label>
-            <select name="mode" value={mode} onChange={(e) => setMode(e.target.value)}>
-              <option value="genie">Genie</option>
-              <option value="assistant">Assistant</option>
-              <option value="simplify">Simplify</option>
-              <option value="positive">Positive</option>
-              <option value="storytelling">Storytelling</option>
-              <option value="coding">Coding Genius</option>
-              <option value="companion">Companion</option>
-              <option value="5H0D4N">5H0D4N</option>
-              <option value="counselor">Counselor</option>
-            </select>
-          </div>*/}
-
-          <div>
-         
-
-
-       
-        </div>
-
-        
-
-             
-        
-
-
-        </div>
-
-        
-
-
-</form>
-
-
-<div className={styles.result}>
-  {chatHistory.map((message, index) => (
-    <div key={index} className={message.role === 'user' ? styles.userMessage : styles.chatGptMessage}>
-      
-      {message.role === 'user' ? 'You: ' : mode === 'assistant' ? 'Assistant: ' : mode === 'academicWriter' ? 'Academic Writer: ' : mode === 'simplify' ? 'Simplify: ' : mode === 'counselor' ? 'Counselor: ' : mode === 'storytelling' ? 'The Story Teller: ' : mode === 'coding' ? 'Coding Guru: ' : mode === 'companion' ? 'Friend: ' : 'AI Personality: ' ? 'MALINA: ' : mode === 'MALINA'}
-      {message.content}
-      {message.role === 'DALL-E' && (
-        <img src={message.image} alt="Generated Image" style={{ maxWidth: '80%', height: 'auto' }} />
-      )}
-    </div>
-  ))}
-</div>
-
-
-<Analytics />
-
-
-
-</main>
-
-<Footer />
-</div>
-
-
-
+  
+          {selectedModel === "GPT-3.5 Turbo" && (
+            <Box mb={4}>
+              <FormLabel>Select an AI to Chat with:</FormLabel>
+              <Stack direction="row" spacing={4}>
+                <Box onClick={() => setMode('assistant')} p={2} border="1px" borderColor={mode === 'assistant' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/assistant.png" alt="Assistant" />}
+                  <Text>Assistant</Text>
+                </Box>
+                <Box onClick={() => setMode('academicWriter')} p={2} border="1px" borderColor={mode === 'academicWriter' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/academicWriter.png" alt="Academic Writer" />}
+                  <Text>Academic Writer</Text>
+                </Box>
+                <Box onClick={() => setMode('simplify')} p={2} border="1px" borderColor={mode === 'simplify' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/simplify.png" alt="Simplify" />}
+                  <Text>Simplify Anything</Text>
+                </Box>
+                <Box onClick={() => setMode('counselor')} p={2} border="1px" borderColor={mode === 'counselor' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/counselor.png" alt="Counselor" />}
+                  <Text>Counselor</Text>
+                </Box>
+                <Box onClick={() => setMode('storytelling')} p={2} border="1px" borderColor={mode === 'storytelling' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/storytelling.png" alt="Storytelling" />}
+                  <Text>The Story Teller</Text>
+                </Box>
+                <Box onClick={() => setMode('coding')} p={2} border="1px" borderColor={mode === 'coding' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/coding.png" alt="Coding Genius" />}
+                  <Text>Coding Guru</Text>
+                </Box>
+                <Box onClick={() => setMode('companion')} p={2} border="1px" borderColor={mode === 'companion' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/companion.png" alt="Companion" />}
+                  <Text>Friend</Text>
+                </Box>
+                <Box onClick={() => setMode('MALINA')} p={2} border="1px" borderColor={mode === 'MALINA' ? 'blue.500' : 'gray.200'} borderRadius="md">
+                  {showAvatars && <img src="/pixel_characterAvatars/MALINA.png" alt="MALINA" />}
+                  <Text>MALINA</Text>
+                </Box>
+              </Stack>
+            </Box>
+          )}
+        </form>
+  
+        <Box mt={8}>
+          {chatHistory.map((message, index) => (
+            <Box key={index} p={4} bg={message.role === 'user' ? 'blue.50' : 'gray.50'} borderRadius="md" mb={4}>
+              <Text>
+                {message.role === 'user' ? 'You: ' : mode === 'assistant' ? 'Assistant: ' : mode === 'academicWriter' ? 'Academic Writer: ' : mode === 'simplify' ? 'Simplify: ' : mode === 'counselor' ? 'Counselor: ' : mode === 'storytelling' ? 'The Story Teller: ' : mode === 'coding' ? 'Coding Guru: ' : mode === 'companion' ? 'Friend: ' : 'AI Personality: ' ? 'MALINA: ' : mode === 'MALINA'}
+                {message.content}
+              </Text>
+              {message.role === 'DALL-E' && (
+                <img src={message.image} alt="Generated Image" style={{ maxWidth: '80%', height: 'auto' }} />
+              )}
+            </Box>
+          ))}
+        </Box>
+  
+        <Analytics />
+      </Container>
+  
+      <Footer />
+    </Box>
   );
-}
-
+}  

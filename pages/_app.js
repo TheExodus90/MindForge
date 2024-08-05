@@ -1,13 +1,15 @@
 // _app.js
-import styles from "./index.module.css";
+import { ChakraProvider } from "@chakra-ui/react";
 import '../styles/globals.css';
-import { AuthProvider } from '../context/authContext'; // Import the AuthProvider
+import { AuthProvider } from '../context/authContext';
 
 function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider> {/* Wrap the entire application with the AuthProvider */}
-      <Component {...pageProps} />
-    </AuthProvider>
+    <ChakraProvider>
+      <AuthProvider>
+        <Component {...pageProps} />
+      </AuthProvider>
+    </ChakraProvider>
   );
 }
 

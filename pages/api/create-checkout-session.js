@@ -10,7 +10,7 @@ export default async function handler(req, res) {
         payment_method_types: ['card'],
         line_items: [
           {
-            price: 'price_1Pi9UdClTxcM5vvL74WZeecd', // Replace with your actual price ID
+            price: 'price_1PimnvClTxcM5vvLnh5n4st8', // Replace with your actual price ID
             quantity: 1,
           },
         ],
